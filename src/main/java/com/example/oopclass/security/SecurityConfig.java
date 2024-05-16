@@ -37,7 +37,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/v1/auth/login", "/v1/auth/register").permitAll()
+                        .requestMatchers("/v1/auth/**", "/v1/user/register", "/v1/major", "v1/subjects").permitAll()
+                        .requestMatchers("/v1/meetings/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

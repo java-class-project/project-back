@@ -48,4 +48,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserRole role;
+
+    // 명시적으로 getter 메서드를 추가 (IDE 문제가 해결되지 않을 경우)
+    public UUID getUserUuid() {
+        return userUuid;
+    }
 }

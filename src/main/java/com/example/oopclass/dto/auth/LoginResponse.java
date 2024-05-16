@@ -1,14 +1,20 @@
-package com.example.oopclass.dto.auth;
+package com.example.oopclass.dto.user;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Getter
-@Setter
+import java.util.UUID;
+
+@Data
+@AllArgsConstructor
 public class LoginResponse {
-    private String token;
+    @JsonProperty("userId")
+    private String userId;
 
-    public LoginResponse(String token) {
-        this.token = token;
-    }
+    @JsonProperty("userUuid")
+    private UUID userUuid;
+
+    @JsonProperty("token")
+    private String token;
 }

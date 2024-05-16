@@ -20,6 +20,11 @@ public class UserService {
     private final MajorRepository majorRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public User findByUserId(String userId) {
+        return userRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+
     // 회원가입
     public void registerUser(JoinRequest request) {
         // UUID 확인
