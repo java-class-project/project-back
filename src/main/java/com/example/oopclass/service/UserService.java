@@ -24,6 +24,12 @@ public class UserService {
         return userRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    public UUID findUserUuidByUserId(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return user.getUserUuid();
+    }
+
 
     // 회원가입
     public void registerUser(JoinRequest request) {

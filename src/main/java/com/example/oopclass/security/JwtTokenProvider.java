@@ -62,9 +62,9 @@ public class JwtTokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (SecurityException | MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-            // Log the exception - it might be helpful for debugging
-            e.printStackTrace(); // 예외 로그 출력
+        } catch (JwtException | IllegalArgumentException e) {
+            // 로그 추가
+            System.out.println("Invalid JWT token: " + e.getMessage());
         }
         return false;
     }
