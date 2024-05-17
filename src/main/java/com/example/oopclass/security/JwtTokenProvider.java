@@ -4,12 +4,16 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtTokenProvider {
@@ -21,6 +25,9 @@ public class JwtTokenProvider {
     private int jwtExpirationMs;
 
     private Key key;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @PostConstruct
     public void init() {
@@ -61,11 +68,18 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
+            // 블랙리스트 확인
+            ValueOperations<String, String> ops = redisTemplate.opsForValue();
+            return ops.get(token) == null;
         } catch (JwtException | IllegalArgumentException e) {
             // 로그 추가
             System.out.println("Invalid JWT token: " + e.getMessage());
         }
         return false;
+    }
+
+    public void invalidateToken(String token) {
+        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+        ops.set(token, "invalid", jwtExpirationMs, TimeUnit.MILLISECONDS);
     }
 }

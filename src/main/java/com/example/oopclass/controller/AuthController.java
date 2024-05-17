@@ -62,6 +62,7 @@ public class AuthController {
         return ResponseEntity.ok(new LoginResponse(user.getUserId(), user.getUserUuid(), jwt));
     }
 
+
     @Operation(summary = "User logout")
     @PostMapping("/logout")
     public ResponseEntity<?> logoutUser(HttpServletRequest request, HttpServletResponse response) {
@@ -74,12 +75,13 @@ public class AuthController {
         }
 
         String token = tokenProvider.resolveToken(request);
-        String userId = tokenProvider.getUserIdFromJWT(token);
-
-        User user = userService.findByUserId(userId);
+        if (token != null) {
+            tokenProvider.invalidateToken(token);
+        }
 
         SecurityContextHolder.clearContext();
         response.setStatus(HttpServletResponse.SC_OK);
-        return ResponseEntity.ok(new LoginResponse(user.getUserId(), user.getUserUuid(), token));
+        return ResponseEntity.ok("Successfully logged out.");
     }
+
 }
