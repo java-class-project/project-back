@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/major")
 public class MajorController {
@@ -18,5 +20,11 @@ public class MajorController {
     public ResponseEntity<Major> createMajor(@RequestBody MajorReqDto majorReqDto) {
         Major major = majorService.saveMajor(majorReqDto);
         return ResponseEntity.ok(major);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Major>> getAllMajors() {
+        List<Major> majors = majorService.getAllMajorsSorted();
+        return ResponseEntity.ok(majors);
     }
 }

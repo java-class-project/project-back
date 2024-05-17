@@ -1,5 +1,6 @@
 package com.example.oopclass.domain.subject;
 
+import com.example.oopclass.domain.major.Major;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -22,4 +23,8 @@ public class Subject {
 
     @Column(name = "subject_name", length = 50000)
     private String subjectName;
+
+    @ManyToOne
+    @JoinColumn(name = "major_uuid")
+    private Major major;
 }

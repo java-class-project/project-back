@@ -2,6 +2,7 @@ package com.example.oopclass.controller;
 
 import com.example.oopclass.dto.user.UpdateRequest;
 import com.example.oopclass.dto.user.UserResponse;
+import com.example.oopclass.dto.user.JoinRequest;
 import com.example.oopclass.domain.user.User;
 import com.example.oopclass.security.JwtTokenProvider;
 import com.example.oopclass.service.UserService;
@@ -10,8 +11,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -42,7 +41,7 @@ public class UserController {
     }
 
     @PutMapping("/{userUuid}")
-    public ResponseEntity<String> updateUserInfo(@PathVariable UUID userUuid, @RequestBody @Valid UpdateRequest request, HttpServletRequest httpRequest) {
+    public ResponseEntity<UserResponse> updateUserInfo(@PathVariable UUID userUuid, @RequestBody @Valid UpdateRequest request, HttpServletRequest httpRequest) {
         String token = jwtTokenProvider.resolveToken(httpRequest);
         if (token == null || !jwtTokenProvider.validateToken(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -55,6 +54,16 @@ public class UserController {
         }
 
         userService.updateUser(userUuid, request);
-        return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
+        User updatedUser = userService.getUserByUuid(userUuid);
+        UserResponse response = new UserResponse(updatedUser);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserResponse> registerUser(@RequestBody @Valid JoinRequest request) {
+        userService.registerUser(request);
+        User newUser = userService.findByUserId(request.getUserId());
+        UserResponse response = new UserResponse(newUser);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

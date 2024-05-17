@@ -6,11 +6,11 @@ import com.example.oopclass.domain.user.User;
 import com.example.oopclass.domain.user.UserRepository;
 import com.example.oopclass.dto.user.JoinRequest;
 import com.example.oopclass.dto.user.UpdateRequest;
+import com.example.oopclass.dto.user.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,9 +30,8 @@ public class UserService {
         return user.getUserUuid();
     }
 
-
     // 회원가입
-    public void registerUser(JoinRequest request) {
+    public UserResponse registerUser(JoinRequest request) {
         // UUID 확인
         UUID mainMajorUuid = UUID.fromString(request.getMainMajor());
         UUID subMajor1Uuid = request.getSubMajor1() != null ? UUID.fromString(request.getSubMajor1()) : null;
@@ -49,7 +48,9 @@ public class UserService {
 
         // User 엔티티 생성 및 저장
         User user = request.toEntity(mainMajor, subMajor1, subMajor2, encodedPassword);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        return new UserResponse(savedUser);
     }
 
     // 회원정보 조회
@@ -59,7 +60,7 @@ public class UserService {
     }
 
     // 회원정보 수정
-    public void updateUser(UUID userUuid, UpdateRequest request) {
+    public UserResponse updateUser(UUID userUuid, UpdateRequest request) {
         User user = userRepository.findById(userUuid)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
@@ -89,5 +90,6 @@ public class UserService {
         }
 
         userRepository.save(user);
+        return new UserResponse(user);
     }
 }

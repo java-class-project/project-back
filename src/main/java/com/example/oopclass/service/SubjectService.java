@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,5 +26,9 @@ public class SubjectService {
 
     public List<Subject> getAllSubjects() {
         return subjectRepository.findAll();
+    }
+
+    public List<Subject> getSubjectsByMajor(UUID majorUuid) {
+        return subjectRepository.findByMajorMajorUuid(majorUuid);
     }
 }

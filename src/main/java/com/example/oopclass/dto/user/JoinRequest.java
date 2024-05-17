@@ -6,40 +6,26 @@ import com.example.oopclass.domain.user.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 
-// import javax.validation.constraints.NotBlank;
-
 @Getter
 @Setter
 public class JoinRequest {
-    // @NotBlank(message = "이름을 입력하세요")
-    private String username;
-
-    // @NotBlank(message = "로그인 아이디를 입력하세요")
     private String userId;
-
-    // @NotBlank(message = "비밀번호를 입력하세요")
+    private String username;
     private String password;
-
-    private String passwordCheck;
-
-    // @NotBlank(message = "학번을 입력하세요")
     private String studentNumber;
-
-    // @NotBlank(message = "본전공을 입력하세요")
     private String mainMajor;
-
     private String subMajor1;
     private String subMajor2;
 
-    public User toEntity(Major mainMajorEntity, Major subMajor1Entity, Major subMajor2Entity, String encodedPassword) {
+    public User toEntity(Major mainMajor, Major subMajor1, Major subMajor2, String encodedPassword) {
         return User.builder()
-                .username(this.username)
-                .userId(this.userId)
+                .userId(userId)
+                .username(username)
                 .password(encodedPassword)
-                .studentNumber(this.studentNumber)
-                .mainMajor(mainMajorEntity)
-                .subMajor1(subMajor1Entity)
-                .subMajor2(subMajor2Entity)
+                .studentNumber(studentNumber)
+                .mainMajor(mainMajor)
+                .subMajor1(subMajor1)
+                .subMajor2(subMajor2)
                 .role(UserRole.USER)
                 .build();
     }
