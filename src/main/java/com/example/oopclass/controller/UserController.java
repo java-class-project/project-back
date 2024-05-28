@@ -67,13 +67,13 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/check-userid")
+    @GetMapping("/register/check-userid")
     public ResponseEntity<Boolean> checkUserIdDuplicate(@RequestParam String userId) {
         boolean isDuplicate = userService.isUserIdDuplicated(userId);
         return ResponseEntity.ok(isDuplicate);
     }
 
-    @GetMapping("/check-studentnumber")
+    @GetMapping("/register/check-studentnumber")
     public ResponseEntity<Boolean> checkStudentNumberDuplicate(@RequestParam String studentNumber) {
         boolean isDuplicate = userService.isStudentNumberDuplicated(studentNumber);
         return ResponseEntity.ok(isDuplicate);
