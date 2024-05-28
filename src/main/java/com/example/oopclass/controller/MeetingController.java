@@ -2,14 +2,16 @@ package com.example.oopclass.controller;
 
 import com.example.oopclass.domain.meeting.Meeting;
 import com.example.oopclass.dto.meeting.CreateMeetingRequest;
+import com.example.oopclass.dto.meeting.UpdateMeetingRequest;
 import com.example.oopclass.service.MeetingService;
-import com.example.oopclass.service.UserService;
+import com.example.oopclass.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.UUID;
 
 @RestController
@@ -17,27 +19,49 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MeetingController {
     private final MeetingService meetingService;
-    private final UserService userService; // UserService 주입 추가
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping
-    public ResponseEntity<Meeting> createMeeting(@RequestBody CreateMeetingRequest request, Authentication authentication) {
-        String userId = authentication.getName(); // 여기서 userId는 일반 문자열입니다.
-        UUID userUuid = userService.findUserUuidByUserId(userId); // 사용자 ID로부터 UUID를 가져옵니다.
+    public ResponseEntity<Meeting> createMeeting(@RequestBody CreateMeetingRequest request, HttpServletRequest httpServletRequest) {
+        String token = jwtTokenProvider.resolveToken(httpServletRequest);
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.status(401).build(); // Unauthorized
+        }
+        UUID userUuid = jwtTokenProvider.getUserUuidFromJWT(token);
+
         Meeting meeting = meetingService.createMeeting(request, userUuid);
         return ResponseEntity.ok(meeting);
     }
 
-    @PostMapping("/{meetingUuid}/join")
-    public ResponseEntity<Void> joinMeeting(@PathVariable UUID meetingUuid, Authentication authentication) {
-        String userId = authentication.getName();
-        UUID userUuid = userService.findUserUuidByUserId(userId);
-        meetingService.joinMeeting(meetingUuid, userUuid);
-        return ResponseEntity.ok().build();
+    @PutMapping("/{meetingId}")
+    public ResponseEntity<Meeting> updateMeeting(@PathVariable UUID meetingId, @RequestBody UpdateMeetingRequest request, HttpServletRequest httpServletRequest) {
+        String token = jwtTokenProvider.resolveToken(httpServletRequest);
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.status(401).build(); // Unauthorized
+        }
+        UUID userUuid = jwtTokenProvider.getUserUuidFromJWT(token);
+
+        try {
+            Meeting meeting = meetingService.updateMeeting(meetingId, request, userUuid);
+            return ResponseEntity.ok(meeting);
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.status(403).build(); // Forbidden
+        }
     }
 
-    @GetMapping
-    public ResponseEntity<List<Meeting>> getAllMeetings() {
-        List<Meeting> meetings = meetingService.getAllMeetings();
-        return ResponseEntity.ok(meetings);
+    @DeleteMapping("/{meetingId}")
+    public ResponseEntity<Void> deleteMeeting(@PathVariable UUID meetingId, HttpServletRequest httpServletRequest) {
+        String token = jwtTokenProvider.resolveToken(httpServletRequest);
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.status(401).build(); // Unauthorized
+        }
+        UUID userUuid = jwtTokenProvider.getUserUuidFromJWT(token);
+
+        try {
+            meetingService.deleteMeeting(meetingId, userUuid);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.status(403).build(); // Forbidden
+        }
     }
 }

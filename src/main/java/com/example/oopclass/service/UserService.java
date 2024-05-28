@@ -30,24 +30,47 @@ public class UserService {
         return user.getUserUuid();
     }
 
+    // 아이디 중복 체크
+    public boolean isUserIdDuplicated(String userId) {
+        return userRepository.findByUserId(userId).isPresent();
+    }
+
+    // 학번 중복 체크
+    public boolean isStudentNumberDuplicated(String studentNumber) {
+        return userRepository.findByStudentNumber(studentNumber).isPresent();
+    }
+
     // 회원가입
     public UserResponse registerUser(JoinRequest request) {
+        // 비밀번호 확인
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new IllegalArgumentException("Passwords do not match.");
+        }
+
+        // 아이디 중복 체크
+        if (isUserIdDuplicated(request.getUserId())) {
+            throw new IllegalArgumentException("User ID already exists.");
+        }
+
+        // 학번 중복 체크
+        if (isStudentNumberDuplicated(request.getStudentNumber())) {
+            throw new IllegalArgumentException("Student number already exists.");
+        }
+
         // UUID 확인
         UUID mainMajorUuid = UUID.fromString(request.getMainMajor());
         UUID subMajor1Uuid = request.getSubMajor1() != null ? UUID.fromString(request.getSubMajor1()) : null;
-        UUID subMajor2Uuid = request.getSubMajor2() != null ? UUID.fromString(request.getSubMajor2()) : null;
 
         // Major 엔티티 조회
         Major mainMajor = majorRepository.findById(mainMajorUuid)
-                .orElseThrow(() -> new IllegalArgumentException("본전공 UUID가 유효하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("Main major UUID is invalid."));
         Major subMajor1 = subMajor1Uuid != null ? majorRepository.findById(subMajor1Uuid).orElse(null) : null;
-        Major subMajor2 = subMajor2Uuid != null ? majorRepository.findById(subMajor2Uuid).orElse(null) : null;
 
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(request.getPassword());
 
         // User 엔티티 생성 및 저장
-        User user = request.toEntity(mainMajor, subMajor1, subMajor2, encodedPassword);
+        User user = request.toEntity(mainMajor, subMajor1, encodedPassword);
         User savedUser = userRepository.save(user);
 
         return new UserResponse(savedUser);
@@ -56,37 +79,29 @@ public class UserService {
     // 회원정보 조회
     public User getUserByUuid(UUID userUuid) {
         return userRepository.findById(userUuid)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
     }
 
     // 회원정보 수정
     public UserResponse updateUser(UUID userUuid, UpdateRequest request) {
         User user = userRepository.findById(userUuid)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
 
         user.setUsername(request.getUsername());
         user.setStudentNumber(request.getStudentNumber());
 
         if (request.getMainMajor() != null) {
             Major mainMajor = majorRepository.findById(UUID.fromString(request.getMainMajor()))
-                    .orElseThrow(() -> new IllegalArgumentException("본전공 UUID가 유효하지 않습니다."));
+                    .orElseThrow(() -> new IllegalArgumentException("Main major UUID is invalid."));
             user.setMainMajor(mainMajor);
         }
 
         if (request.getSubMajor1() != null) {
             Major subMajor1 = majorRepository.findById(UUID.fromString(request.getSubMajor1()))
-                    .orElseThrow(() -> new IllegalArgumentException("부전공1 UUID가 유효하지 않습니다."));
+                    .orElseThrow(() -> new IllegalArgumentException("Sub major 1 UUID is invalid."));
             user.setSubMajor1(subMajor1);
         } else {
             user.setSubMajor1(null);
-        }
-
-        if (request.getSubMajor2() != null) {
-            Major subMajor2 = majorRepository.findById(UUID.fromString(request.getSubMajor2()))
-                    .orElseThrow(() -> new IllegalArgumentException("부전공2 UUID가 유효하지 않습니다."));
-            user.setSubMajor2(subMajor2);
-        } else {
-            user.setSubMajor2(null);
         }
 
         userRepository.save(user);

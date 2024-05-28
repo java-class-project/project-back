@@ -1,11 +1,11 @@
 package com.example.oopclass.controller;
 
+import com.example.oopclass.domain.user.User;
 import com.example.oopclass.dto.user.UpdateRequest;
 import com.example.oopclass.dto.user.UserResponse;
 import com.example.oopclass.dto.user.JoinRequest;
-import com.example.oopclass.domain.user.User;
-import com.example.oopclass.security.JwtTokenProvider;
 import com.example.oopclass.service.UserService;
+import com.example.oopclass.security.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -65,5 +65,17 @@ public class UserController {
         User newUser = userService.findByUserId(request.getUserId());
         UserResponse response = new UserResponse(newUser);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/check-userid")
+    public ResponseEntity<Boolean> checkUserIdDuplicate(@RequestParam String userId) {
+        boolean isDuplicate = userService.isUserIdDuplicated(userId);
+        return ResponseEntity.ok(isDuplicate);
+    }
+
+    @GetMapping("/check-studentnumber")
+    public ResponseEntity<Boolean> checkStudentNumberDuplicate(@RequestParam String studentNumber) {
+        boolean isDuplicate = userService.isStudentNumberDuplicated(studentNumber);
+        return ResponseEntity.ok(isDuplicate);
     }
 }

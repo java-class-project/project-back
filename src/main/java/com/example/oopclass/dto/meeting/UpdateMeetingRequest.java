@@ -7,10 +7,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class CreateMeetingRequest {
+public class UpdateMeetingRequest {
     private String teamType; // "TeamProject", "Study", "Project"
-
-
     private UUID majorUuid; // 전공 UUID
     private UUID subjectUuid; // 강의 UUID
     private int desiredCount; // 희망 인원 수

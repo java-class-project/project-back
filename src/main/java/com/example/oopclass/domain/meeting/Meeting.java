@@ -1,6 +1,7 @@
 package com.example.oopclass.domain.meeting;
 
 import com.example.oopclass.domain.subject.Subject;
+import com.example.oopclass.domain.major.Major;
 import com.example.oopclass.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +11,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "meeting")
+@Table(name = "meetings")
 @Getter
 @Setter
 @Builder
@@ -24,30 +25,29 @@ public class Meeting {
     private UUID meetingUuid;
 
     @ManyToOne
+    @JoinColumn(name = "user_uuid", nullable = false)
+    private User user;
+
+
+    @ManyToOne
+    @JoinColumn(name = "major_uuid", nullable = false)
+    private Major major;
+
+    @ManyToOne
     @JoinColumn(name = "subject_uuid", nullable = false)
     private Subject subject;
-
-    @Column(name = "subject_num")
-    private int subjectNum;
 
     @Column(name = "team_type")
     private String teamType;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "desired_count")
+    private int desiredCount;
 
-    @Column(name = "meeting_info")
-    private String meetingInfo;
+    @Column(name = "title")
+    private String title;
 
-    @Column(name = "meeting_recruitment")
-    private int meetingRecruitment;
-
-    @Column(name = "meeting_recruitment_finished")
-    private int meetingRecruitmentFinished;
-
-    @ManyToOne
-    @JoinColumn(name = "team_leader", nullable = false)
-    private User teamLeader;
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "created_at")
     private Date createdAt;

@@ -24,6 +24,8 @@ public class SubjectController {
 
     @GetMapping
     public ResponseEntity<List<Subject>> getAllSubjects(@RequestParam(required = false) UUID major) {
+
+
         List<Subject> subjects;
         if (major != null) {
             subjects = subjectService.getSubjectsByMajor(major);

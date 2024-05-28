@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -72,6 +73,7 @@ public class JwtTokenProvider {
             ValueOperations<String, String> ops = redisTemplate.opsForValue();
             return ops.get(token) == null;
         } catch (JwtException | IllegalArgumentException e) {
+
             // 로그 추가
             System.out.println("Invalid JWT token: " + e.getMessage());
         }
@@ -82,4 +84,16 @@ public class JwtTokenProvider {
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
         ops.set(token, "invalid", jwtExpirationMs, TimeUnit.MILLISECONDS);
     }
+
+    public UUID getUserUuidFromJWT(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return UUID.fromString(claims.getSubject());
+    }
+
+
 }

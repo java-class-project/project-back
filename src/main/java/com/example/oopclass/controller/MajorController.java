@@ -16,6 +16,7 @@ public class MajorController {
     @Autowired
     private MajorService majorService;
 
+    
     @PostMapping
     public ResponseEntity<Major> createMajor(@RequestBody MajorReqDto majorReqDto) {
         Major major = majorService.saveMajor(majorReqDto);

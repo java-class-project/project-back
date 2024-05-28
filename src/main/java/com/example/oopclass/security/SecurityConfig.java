@@ -50,9 +50,14 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
+
+
+
                 );
 
         return http.build();
+
+
     }
 
     @Bean

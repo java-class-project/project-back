@@ -12,12 +12,12 @@ public class JoinRequest {
     private String userId;
     private String username;
     private String password;
+    private String confirmPassword; // 비밀번호 재확인
     private String studentNumber;
     private String mainMajor;
     private String subMajor1;
-    private String subMajor2;
 
-    public User toEntity(Major mainMajor, Major subMajor1, Major subMajor2, String encodedPassword) {
+    public User toEntity(Major mainMajor, Major subMajor1, String encodedPassword) {
         return User.builder()
                 .userId(userId)
                 .username(username)
@@ -25,7 +25,6 @@ public class JoinRequest {
                 .studentNumber(studentNumber)
                 .mainMajor(mainMajor)
                 .subMajor1(subMajor1)
-                .subMajor2(subMajor2)
                 .role(UserRole.USER)
                 .build();
     }

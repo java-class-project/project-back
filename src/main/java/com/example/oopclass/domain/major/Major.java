@@ -8,6 +8,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "major")
+
+
 @Getter
 @Setter
 public class Major {
