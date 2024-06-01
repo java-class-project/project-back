@@ -13,7 +13,9 @@ import com.example.oopclass.dto.meeting.UpdateMeetingRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,8 +27,8 @@ public class MeetingService {
     private final SubjectRepository subjectRepository;
 
     @Transactional
-    public Meeting createMeeting(CreateMeetingRequest request, UUID userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public Meeting createMeeting(CreateMeetingRequest request, String userId) {
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Major major = majorRepository.findById(request.getMajorUuid()).orElseThrow(() -> new IllegalArgumentException("Major not found"));
         Subject subject = subjectRepository.findById(request.getSubjectUuid()).orElseThrow(() -> new IllegalArgumentException("Subject not found"));
 
@@ -46,11 +48,11 @@ public class MeetingService {
     }
 
     @Transactional
-    public Meeting updateMeeting(UUID meetingUuid, UpdateMeetingRequest request, UUID userId) throws IllegalAccessException {
+    public Meeting updateMeeting(UUID meetingUuid, UpdateMeetingRequest request, String userId) throws IllegalAccessException {
         Meeting meeting = meetingRepository.findByMeetingUuidAndDeletedAtIsNull(meetingUuid)
                 .orElseThrow(() -> new IllegalArgumentException("Meeting not found"));
 
-        if (!meeting.getUser().getUserUuid().equals(userId)) {
+        if (!meeting.getUser().getUserId().equals(userId)) {
             throw new IllegalAccessException("You do not have permission to update this meeting");
         }
 
@@ -68,15 +70,25 @@ public class MeetingService {
     }
 
     @Transactional
-    public void deleteMeeting(UUID meetingUuid, UUID userId) throws IllegalAccessException {
+    public void deleteMeeting(UUID meetingUuid, UUID userUuid) throws IllegalAccessException {
         Meeting meeting = meetingRepository.findByMeetingUuidAndDeletedAtIsNull(meetingUuid)
                 .orElseThrow(() -> new IllegalArgumentException("Meeting not found"));
 
-        if (!meeting.getUser().getUserUuid().equals(userId)) {
+        if (!meeting.getUser().getUserUuid().equals(userUuid)) {
             throw new IllegalAccessException("You do not have permission to delete this meeting");
         }
 
         meeting.setDeletedAt(new Date());
         meetingRepository.save(meeting);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Meeting> getAllMeetings() {
+        return meetingRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Meeting> filterAndSearchMeetings(UUID majorUuid, UUID subjectUuid, String teamType, Integer desiredCount, String searchText) {
+        return meetingRepository.filterAndSearchMeetings(majorUuid, subjectUuid, teamType, desiredCount, searchText);
     }
 }

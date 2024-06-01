@@ -2,17 +2,19 @@ package com.example.oopclass.controller;
 
 import com.example.oopclass.domain.meeting.Meeting;
 import com.example.oopclass.dto.meeting.CreateMeetingRequest;
+import com.example.oopclass.dto.meeting.MeetingResponse;
 import com.example.oopclass.dto.meeting.UpdateMeetingRequest;
 import com.example.oopclass.service.MeetingService;
 import com.example.oopclass.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/meetings")
@@ -27,9 +29,9 @@ public class MeetingController {
         if (token == null || !jwtTokenProvider.validateToken(token)) {
             return ResponseEntity.status(401).build(); // Unauthorized
         }
-        UUID userUuid = jwtTokenProvider.getUserUuidFromJWT(token);
 
-        Meeting meeting = meetingService.createMeeting(request, userUuid);
+        String userId = jwtTokenProvider.getUserIdFromJWT(token);
+        Meeting meeting = meetingService.createMeeting(request, userId);
         return ResponseEntity.ok(meeting);
     }
 
@@ -39,10 +41,10 @@ public class MeetingController {
         if (token == null || !jwtTokenProvider.validateToken(token)) {
             return ResponseEntity.status(401).build(); // Unauthorized
         }
-        UUID userUuid = jwtTokenProvider.getUserUuidFromJWT(token);
 
+        String userId = jwtTokenProvider.getUserIdFromJWT(token);
         try {
-            Meeting meeting = meetingService.updateMeeting(meetingId, request, userUuid);
+            Meeting meeting = meetingService.updateMeeting(meetingId, request, userId);
             return ResponseEntity.ok(meeting);
         } catch (IllegalAccessException e) {
             return ResponseEntity.status(403).build(); // Forbidden
@@ -55,13 +57,37 @@ public class MeetingController {
         if (token == null || !jwtTokenProvider.validateToken(token)) {
             return ResponseEntity.status(401).build(); // Unauthorized
         }
-        UUID userUuid = jwtTokenProvider.getUserUuidFromJWT(token);
 
+        UUID userUuid = jwtTokenProvider.getUserUuidFromJWT(token);
         try {
             meetingService.deleteMeeting(meetingId, userUuid);
             return ResponseEntity.noContent().build();
         } catch (IllegalAccessException e) {
             return ResponseEntity.status(403).build(); // Forbidden
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MeetingResponse>> getAllMeetings() {
+        List<Meeting> meetings = meetingService.getAllMeetings();
+        List<MeetingResponse> meetingResponses = meetings.stream()
+                .map(MeetingResponse::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(meetingResponses);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<MeetingResponse>> filterAndSearchMeetings(
+            @RequestParam(required = false) UUID majorUuid,
+            @RequestParam(required = false) UUID subjectUuid,
+            @RequestParam(required = false) String teamType,
+            @RequestParam(required = false) Integer desiredCount,
+            @RequestParam(required = false) String searchText) {
+
+        List<Meeting> meetings = meetingService.filterAndSearchMeetings(majorUuid, subjectUuid, teamType, desiredCount, searchText);
+        List<MeetingResponse> meetingResponses = meetings.stream()
+                .map(MeetingResponse::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(meetingResponses);
     }
 }

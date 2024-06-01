@@ -56,6 +56,10 @@ public class AuthController {
         String jwt = tokenProvider.generateToken(authentication);
         logger.info("-----------------created jwt token: " + jwt);
 
+
+
+
+
         User user = userService.findByUserId(loginRequest.getUserId());
         logger.info("For check userId: {}, userUuid: {}, jwt: {}", user.getUserId(), user.getUserUuid(), jwt);
 

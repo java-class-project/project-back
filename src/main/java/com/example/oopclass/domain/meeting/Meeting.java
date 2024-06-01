@@ -28,7 +28,6 @@ public class Meeting {
     @JoinColumn(name = "user_uuid", nullable = false)
     private User user;
 
-
     @ManyToOne
     @JoinColumn(name = "major_uuid", nullable = false)
     private Major major;

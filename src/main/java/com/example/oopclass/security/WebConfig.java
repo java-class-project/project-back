@@ -15,6 +15,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
 
 
+
+
+
+
                 .allowCredentials(true) // 자격 증명 허용
 
 

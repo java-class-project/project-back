@@ -58,10 +58,23 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
+
+    public UUID getUserUuidFromJWT(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return UUID.fromString(claims.getSubject());
+
+    }
+
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
+            
         }
         return null;
     }
@@ -85,15 +98,7 @@ public class JwtTokenProvider {
         ops.set(token, "invalid", jwtExpirationMs, TimeUnit.MILLISECONDS);
     }
 
-    public UUID getUserUuidFromJWT(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
 
-        return UUID.fromString(claims.getSubject());
-    }
 
 
 }

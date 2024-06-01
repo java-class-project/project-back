@@ -37,6 +37,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
+
+
+
                         //TODO: "v1/meetings" 임시허용
                         .requestMatchers("/v1/auth/**", "/v1/user/register", "/v1/major", "v1/subjects", "v1/meetings").permitAll()
                         .requestMatchers("/v1/meetings/**").authenticated()
