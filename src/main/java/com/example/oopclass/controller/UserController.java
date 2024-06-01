@@ -69,13 +69,13 @@ public class UserController {
 
     @GetMapping("/register/check-userid")
     public ResponseEntity<Boolean> checkUserIdDuplicate(@RequestParam String userId) {
-        boolean isDuplicate = userService.isUserIdDuplicated(userId);
-        return ResponseEntity.ok(isDuplicate);
+        boolean isAvailable = userService.isUserIdDuplicated(userId);
+        return ResponseEntity.ok(isAvailable);
     }
 
     @GetMapping("/register/check-studentnumber")
     public ResponseEntity<Boolean> checkStudentNumberDuplicate(@RequestParam String studentNumber) {
-        boolean isDuplicate = userService.isStudentNumberDuplicated(studentNumber);
-        return ResponseEntity.ok(isDuplicate);
+        boolean isAvailable = userService.isStudentNumberDuplicated(studentNumber);
+        return ResponseEntity.ok(isAvailable);
     }
 }

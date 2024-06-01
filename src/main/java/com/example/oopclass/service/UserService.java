@@ -32,11 +32,11 @@ public class UserService {
     }
 
     public boolean isUserIdDuplicated(String userId) {
-        return userRepository.findByUserId(userId).isPresent();
+        return !userRepository.findByUserId(userId).isPresent();
     }
 
     public boolean isStudentNumberDuplicated(String studentNumber) {
-        return userRepository.findByStudentNumber(studentNumber).isPresent();
+        return !userRepository.findByStudentNumber(studentNumber).isPresent();
     }
 
     public UserResponse registerUser(JoinRequest request) {
@@ -44,11 +44,11 @@ public class UserService {
             throw new IllegalArgumentException("Passwords do not match.");
         }
 
-        if (isUserIdDuplicated(request.getUserId())) {
+        if (!isUserIdDuplicated(request.getUserId())) {
             throw new IllegalArgumentException("User ID already exists.");
         }
 
-        if (isStudentNumberDuplicated(request.getStudentNumber())) {
+        if (!isStudentNumberDuplicated(request.getStudentNumber())) {
             throw new IllegalArgumentException("Student number already exists.");
         }
 

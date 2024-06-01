@@ -37,12 +37,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-
-
-
-                        //TODO: "v1/meetings" 임시허용
-                        .requestMatchers("/v1/auth/**", "/v1/user/register", "/v1/major", "v1/subjects", "v1/meetings").permitAll()
-                        .requestMatchers("/v1/meetings/**").authenticated()
+                        .requestMatchers("/v1/auth/**").permitAll()
+                        .requestMatchers("/v1/user/register/**").permitAll()
+                        .requestMatchers("/v1/major").permitAll()
+                        .requestMatchers("/v1/subjects").permitAll()
+                        .requestMatchers("/v1/meetings").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -54,14 +53,9 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
-
-
-
                 );
 
         return http.build();
-
-
     }
 
     @Bean
