@@ -18,7 +18,7 @@ public class JwtUtils {
     private String jwtSecret;
 
     @Value("${app.jwtExpirationMs}")
-    private int jwtExpirationMs;
+    private long jwtExpirationMs;
 
     private final SecretKey key;
 
@@ -37,11 +37,7 @@ public class JwtUtils {
 
 
 
-
     public String generateJwtToken(UserDetails userDetails) {
-
-
-
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
