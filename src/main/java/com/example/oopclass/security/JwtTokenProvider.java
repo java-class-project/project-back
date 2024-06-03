@@ -23,7 +23,7 @@ public class JwtTokenProvider {
     private String jwtSecret;
 
     @Value("${app.jwtExpirationMs}")
-    private int jwtExpirationMs;
+    private long jwtExpirationMs;
 
     private Key key;
 
@@ -80,6 +80,9 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
+
+
+
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             // 블랙리스트 확인
