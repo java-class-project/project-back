@@ -92,6 +92,7 @@ public class MeetingController {
             @RequestParam(required = false) UUID majorUuid,
             @RequestParam(required = false) UUID subjectUuid,
             @RequestParam(required = false) List<String> teamTypes,
+            @RequestParam(required = false) Integer classNum,
             @RequestParam(required = false) Integer desiredCount,
             @RequestParam(required = false) String searchText) {
 

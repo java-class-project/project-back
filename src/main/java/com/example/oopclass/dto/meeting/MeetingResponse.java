@@ -16,6 +16,8 @@ public class MeetingResponse {
     private String username;
     private String userId;
 
+    private Integer classNum;
+
     private String studentNumber;
     private String userMajor;
     private String title;
@@ -30,6 +32,7 @@ public class MeetingResponse {
         this.teamType = meeting.getTeamType();
         this.username = meeting.getUser().getUsername();
         this.userId = meeting.getUser().getUserId();
+        this.classNum = meeting.getClassNum();
         this.studentNumber = meeting.getUser().getStudentNumber();
         this.userMajor = meeting.getUser().getMainMajor().getMajorName();
         this.title = meeting.getTitle();
