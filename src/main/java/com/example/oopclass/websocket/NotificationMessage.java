@@ -12,6 +12,10 @@ public class NotificationMessage {
 
     private String message;
 
+
+
+
+
 }
 
 

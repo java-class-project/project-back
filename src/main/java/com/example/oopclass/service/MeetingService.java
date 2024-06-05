@@ -38,6 +38,8 @@ public class MeetingService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+
+
     @Transactional
     public Meeting createMeeting(CreateMeetingRequest request, String userId) {
         User user = userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -62,7 +64,7 @@ public class MeetingService {
         MeetingInfo meetingInfo = MeetingInfo.builder()
                 .meeting(savedMeeting)
                 .meetingRecruitment(request.getDesiredCount())
-                .meetingRecruitmentFinished(1) // 생성자 포함
+                .meetingRecruitmentFinished(1)
                 .build();
 
         meetingInfoRepository.save(meetingInfo);
@@ -125,7 +127,7 @@ public class MeetingService {
         }
 
         String applicantInfo = "이름: " + applicant.getUsername() + ", 학과: " + applicant.getMainMajor().getMajorName() + ", 학번: " + applicant.getStudentNumber() + ", 수업: " + meeting.getSubject().getSubjectName() + ", 신청 날짜: " + new Date();
-        notificationService.notifyMeetingCreator(meeting.getUser().getUserId(), applicantInfo);  // userId를 사용
+        notificationService.notifyMeetingCreator(meeting.getUser().getUserId(), applicantInfo);
     }
 
     @Transactional
@@ -156,4 +158,11 @@ public class MeetingService {
 
         notificationService.notifyApplicant(applicant.getUserId(), accepted);
     }
+
+    public MeetingStatus getMeetingStatusByUuid(UUID userUuid) {
+        return meetingStatusRepository.findByUser_UserUuid(userUuid)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+
 }

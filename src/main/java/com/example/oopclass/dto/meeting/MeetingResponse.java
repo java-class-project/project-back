@@ -4,9 +4,12 @@ import com.example.oopclass.domain.meeting.Meeting;
 import lombok.Getter;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Getter
 public class MeetingResponse {
+    private UUID meetingUuid;
+
     private String subjectName;
     private int desiredCount;
     private String teamType;
@@ -21,6 +24,7 @@ public class MeetingResponse {
     private Date date;
 
     public MeetingResponse(Meeting meeting) {
+        this.meetingUuid = meeting.getMeetingUuid();
         this.subjectName = meeting.getSubject().getSubjectName();
         this.desiredCount = meeting.getDesiredCount();
         this.teamType = meeting.getTeamType();

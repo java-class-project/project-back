@@ -15,6 +15,8 @@ public class MajorService {
     @Autowired
     private MajorRepository majorRepository;
 
+
+
     public Major saveMajor(MajorReqDto majorReqDto) {
         Major major = new Major();
         major.setMajorName(majorReqDto.getMajorName());

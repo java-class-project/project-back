@@ -23,6 +23,8 @@ public class JwtUtils {
     private final SecretKey key;
 
 
+
+
     @PostConstruct
     public void init() {
         if (jwtSecret == null || jwtSecret.getBytes().length < 64) {

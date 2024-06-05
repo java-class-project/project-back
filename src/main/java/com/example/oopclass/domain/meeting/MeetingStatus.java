@@ -24,4 +24,5 @@ public class MeetingStatus {
     @ManyToOne
     @JoinColumn(name = "user_uuid", nullable = false)
     private User user;
+    
 }

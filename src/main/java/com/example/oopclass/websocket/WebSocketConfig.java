@@ -26,5 +26,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .addEndpoint("/ws")     // 엔드포인트: /ws
                 .setAllowedOrigins("*");
     }
+
+
+
 }
 

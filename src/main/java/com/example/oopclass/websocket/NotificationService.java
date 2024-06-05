@@ -35,6 +35,9 @@ public class NotificationService {
         Notification notification = new Notification();
         notification.setUserId(userId);
         notification.setMessage(message);
+
+
+
         notification.setCreatedAt(new Date());
         notification.setRead(false);
         notificationRepository.save(notification);
