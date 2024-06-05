@@ -136,7 +136,11 @@ public class MeetingController {
         MeetingStatus meetingStatus = meetingService.getMeetingStatusByUuid(userUuid);
         User user = userService.getUserByUuid(userUuid);
 
-        if (meetingStatus == null || !user.getUserId().equals(userId)) {
+        if (meetingStatus == null) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        if (!user.getUserId().equals(userId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 

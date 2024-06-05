@@ -160,8 +160,7 @@ public class MeetingService {
     }
 
     public MeetingStatus getMeetingStatusByUuid(UUID userUuid) {
-        return meetingStatusRepository.findByUser_UserUuid(userUuid)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        return meetingStatusRepository.findByUser_UserUuid(userUuid).orElse(null);
     }
 
 

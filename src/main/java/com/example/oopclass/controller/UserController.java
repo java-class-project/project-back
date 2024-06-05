@@ -25,7 +25,6 @@ public class UserController {
 
 
 
-
     @GetMapping("/{userUuid}")
     public ResponseEntity<UserResponse> getUserInfo(@PathVariable UUID userUuid, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);

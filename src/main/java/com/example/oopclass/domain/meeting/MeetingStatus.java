@@ -22,7 +22,9 @@ public class MeetingStatus {
     private Meeting meeting;
 
     @ManyToOne
+
+
     @JoinColumn(name = "user_uuid", nullable = false)
     private User user;
-    
+
 }
