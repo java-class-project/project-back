@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.security.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
@@ -19,34 +20,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Meeting {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "meeting_uuid", updatable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "meeting_uuid")
     private UUID meetingUuid;
 
-    @ManyToOne
-    @JoinColumn(name = "user_uuid", nullable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "major_uuid", nullable = false)
-    private Major major;
-
-    @ManyToOne
-    @JoinColumn(name = "subject_uuid", nullable = false)
-    private Subject subject;
-
-    @Column(name = "team_type")
+    @Column(name = "team_type", length = 5000)
     private String teamType;
-
-    @Column(name = "desired_count")
-    private int desiredCount;
-
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "description")
-    private String description;
 
     @Column(name = "created_at")
     private Date createdAt;
@@ -56,4 +35,25 @@ public class Meeting {
 
     @Column(name = "deleted_at")
     private Date deletedAt;
+
+    @Column(name = "description", length = 255)
+    private String description;
+
+    @Column(name = "desired_count")
+    private Integer desiredCount;
+
+    @Column(name = "title", length = 255)
+    private String title;
+
+    @ManyToOne
+    @JoinColumn(name = "subject_uuid")
+    private Subject subject;
+
+    @ManyToOne
+    @JoinColumn(name = "major_uuid")
+    private Major major;
+
+    @ManyToOne
+    @JoinColumn(name = "user_uuid")
+    private User user;
 }

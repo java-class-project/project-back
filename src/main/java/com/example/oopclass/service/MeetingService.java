@@ -2,29 +2,41 @@ package com.example.oopclass.service;
 
 import com.example.oopclass.domain.major.Major;
 import com.example.oopclass.domain.major.MajorRepository;
-import com.example.oopclass.domain.meeting.Meeting;
-import com.example.oopclass.domain.meeting.MeetingRepository;
+import com.example.oopclass.domain.meeting.*;
 import com.example.oopclass.domain.subject.Subject;
 import com.example.oopclass.domain.subject.SubjectRepository;
 import com.example.oopclass.domain.user.User;
 import com.example.oopclass.domain.user.UserRepository;
 import com.example.oopclass.dto.meeting.CreateMeetingRequest;
 import com.example.oopclass.dto.meeting.UpdateMeetingRequest;
+import com.example.oopclass.websocket.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class MeetingService {
     private final MeetingRepository meetingRepository;
+    private final MeetingInfoRepository meetingInfoRepository;
+    private final MeetingStatusRepository meetingStatusRepository;
     private final UserRepository userRepository;
+
     private final MajorRepository majorRepository;
+
     private final SubjectRepository subjectRepository;
+    private final NotificationService notificationService;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Transactional
     public Meeting createMeeting(CreateMeetingRequest request, String userId) {
@@ -44,7 +56,17 @@ public class MeetingService {
                 .updatedAt(new Date())
                 .build();
 
-        return meetingRepository.save(meeting);
+        Meeting savedMeeting = meetingRepository.save(meeting);
+
+        MeetingInfo meetingInfo = MeetingInfo.builder()
+                .meeting(savedMeeting)
+                .meetingRecruitment(request.getDesiredCount())
+                .meetingRecruitmentFinished(1) // 생성자 포함
+                .build();
+
+        meetingInfoRepository.save(meetingInfo);
+
+        return savedMeeting;
     }
 
     @Transactional
@@ -70,11 +92,11 @@ public class MeetingService {
     }
 
     @Transactional
-    public void deleteMeeting(UUID meetingUuid, UUID userUuid) throws IllegalAccessException {
+    public void deleteMeeting(UUID meetingUuid, UUID userId) throws IllegalAccessException {
         Meeting meeting = meetingRepository.findByMeetingUuidAndDeletedAtIsNull(meetingUuid)
                 .orElseThrow(() -> new IllegalArgumentException("Meeting not found"));
 
-        if (!meeting.getUser().getUserUuid().equals(userUuid)) {
+        if (!meeting.getUser().getUserId().equals(userId)) {
             throw new IllegalAccessException("You do not have permission to delete this meeting");
         }
 
@@ -88,7 +110,49 @@ public class MeetingService {
     }
 
     @Transactional(readOnly = true)
-    public List<Meeting> filterAndSearchMeetings(UUID majorUuid, UUID subjectUuid, String teamType, Integer desiredCount, String searchText) {
-        return meetingRepository.filterAndSearchMeetings(majorUuid, subjectUuid, teamType, desiredCount, searchText);
+    public List<Meeting> filterAndSearchMeetings(UUID majorUuid, UUID subjectUuid, List<String> teamTypes, Integer desiredCount, String searchText) {
+        return meetingRepository.filterAndSearchMeetings(majorUuid, subjectUuid, teamTypes, desiredCount, searchText);
+    }
+
+    @Transactional
+    public void applyForMeeting(UUID meetingId, User applicant) {
+        Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(() -> new IllegalArgumentException("Meeting not found"));
+        MeetingInfo meetingInfo = meetingInfoRepository.findByMeeting(meeting)
+                .orElseThrow(() -> new IllegalArgumentException("Meeting info not found"));
+        if (meetingInfo.getMeetingRecruitment().equals(meetingInfo.getMeetingRecruitmentFinished())) {
+            throw new IllegalStateException("Meeting recruitment is finished");
+        }
+
+        String applicantInfo = "이름: " + applicant.getUsername() + ", 학과: " + applicant.getMainMajor().getMajorName() + ", 학번: " + applicant.getStudentNumber() + ", 수업: " + meeting.getSubject().getSubjectName() + ", 신청 날짜: " + new Date();
+        notificationService.notifyMeetingCreator(meeting.getUser().getUserId(), applicantInfo);  // userId를 사용
+    }
+
+    @Transactional
+    public void respondToApplication(UUID meetingId, String applicantId, boolean accepted) {
+        Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(() -> new IllegalArgumentException("Meeting not found"));
+        User applicant = userRepository.findByUserId(applicantId).orElseThrow(() -> new IllegalArgumentException("Applicant not found"));
+        MeetingInfo meetingInfo = meetingInfoRepository.findByMeeting(meeting)
+                .orElseThrow(() -> new IllegalArgumentException("Meeting info not found"));
+
+        if (accepted) {
+            if (meetingInfo.getMeetingRecruitment().equals(meetingInfo.getMeetingRecruitmentFinished())) {
+                throw new IllegalStateException("Meeting recruitment is finished");
+            }
+            meetingInfo.setMeetingRecruitmentFinished(meetingInfo.getMeetingRecruitmentFinished() + 1);
+            meetingInfoRepository.save(meetingInfo);
+
+            MeetingStatus meetingStatus = new MeetingStatus();
+            meetingStatus.setMeeting(meeting);
+            meetingStatus.setUser(applicant);
+            meetingStatusRepository.save(meetingStatus);
+
+            ValueOperations<String, String> ops = redisTemplate.opsForValue();
+            ops.set(applicantId.toString(), "Application accepted", 1, TimeUnit.DAYS);
+        } else {
+            ValueOperations<String, String> ops = redisTemplate.opsForValue();
+            ops.set(applicantId.toString(), "Application rejected", 1, TimeUnit.DAYS);
+        }
+
+        notificationService.notifyApplicant(applicant.getUserId(), accepted);
     }
 }

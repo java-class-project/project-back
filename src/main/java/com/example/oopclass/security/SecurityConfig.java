@@ -1,5 +1,6 @@
 package com.example.oopclass.security;
 
+import io.swagger.models.HttpMethod;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/v1/auth/**").permitAll()
                         .requestMatchers("/v1/user/register/**").permitAll()
+                        .requestMatchers("/v1/auth/login").permitAll()
                         .requestMatchers("/v1/major").permitAll()
                         .requestMatchers("/v1/subjects").permitAll()
                         .requestMatchers("/v1/meetings").permitAll()

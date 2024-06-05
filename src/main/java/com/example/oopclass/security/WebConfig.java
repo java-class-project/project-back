@@ -19,6 +19,12 @@ public class WebConfig implements WebMvcConfigurer {
 
 
 
+
+
+
+
+
+
                 .allowCredentials(true) // 자격 증명 허용
 
 

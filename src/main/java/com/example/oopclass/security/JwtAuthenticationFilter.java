@@ -1,5 +1,7 @@
 package com.example.oopclass.security;
 
+import com.example.oopclass.domain.user.User;
+import com.example.oopclass.domain.user.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,10 +20,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
 
-    public JwtAuthenticationFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public JwtAuthenticationFilter(UserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider,
+                                   UserRepository userRepository) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -31,6 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
             String userId = jwtTokenProvider.getUserIdFromJWT(jwt);
             UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+//            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!11확인용ㅇ" + userDetails);
+
             if (userDetails != null) {
                 JwtAuthenticationToken authentication = new JwtAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

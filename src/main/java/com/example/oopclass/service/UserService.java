@@ -22,6 +22,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public User findByUserId(String userId) {
+
         return userRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
@@ -74,12 +75,16 @@ public class UserService {
         return new UserResponse(user);
     }
 
+    public User getUserById (String userId) {
+        return userRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("User not found."));
+    }
+
     public User getUserByUuid(UUID userUuid) {
-        return userRepository.findById(userUuid).orElseThrow(() -> new IllegalArgumentException("User not found."));
+        return userRepository.findByUserUuid(userUuid).orElseThrow(() -> new IllegalArgumentException("User not found."));
     }
 
     public UserResponse updateUser(UUID userUuid, UpdateRequest request) {
-        User user = userRepository.findById(userUuid)
+        User user = userRepository.findByUserUuid(userUuid)
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
 
         user.setUsername(request.getUsername());

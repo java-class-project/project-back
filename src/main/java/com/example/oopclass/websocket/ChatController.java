@@ -18,3 +18,5 @@ public class ChatController {
         return new Message(message.getContent());
     }
 }
+
+

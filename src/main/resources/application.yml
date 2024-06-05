@@ -4,6 +4,10 @@ server:
 
 
 spring:
+  spring:
+    redis:
+      host: localhost
+      port: 6380
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://database.ctmyekok4vd7.ap-northeast-2.rds.amazonaws.com:5432/postgres?serverTime=UTC&characterEncoding=UTF-8
