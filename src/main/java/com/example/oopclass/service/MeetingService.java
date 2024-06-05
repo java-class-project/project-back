@@ -49,6 +49,7 @@ public class MeetingService {
                 .teamType(request.getTeamType())
                 .major(major)
                 .subject(subject)
+                .classNum(request.getClassNum())
                 .desiredCount(request.getDesiredCount())
                 .title(request.getTitle())
                 .description(request.getDescription())

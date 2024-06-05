@@ -27,6 +27,9 @@ public class Meeting {
     @Column(name = "team_type", length = 5000)
     private String teamType;
 
+    @Column(name="class_num")
+    private Integer classNum;
+
     @Column(name = "created_at")
     private Date createdAt;
 

@@ -47,7 +47,7 @@ public class MeetingController {
             Meeting meeting = meetingService.updateMeeting(meetingId, request, userId);
             return ResponseEntity.ok(meeting);
         } catch (IllegalAccessException e) {
-            return ResponseEntity.status(403).build(); // Forbidden
+            return ResponseEntity.status(403).build();
         }
     }
 

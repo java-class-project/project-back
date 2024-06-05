@@ -13,9 +13,6 @@ public class MeetingResponse {
     private String username;
     private String userId;
 
-
-
-
     private String studentNumber;
     private String userMajor;
     private String title;
