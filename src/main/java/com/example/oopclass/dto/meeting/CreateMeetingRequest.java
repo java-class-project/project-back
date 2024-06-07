@@ -12,7 +12,6 @@ public class CreateMeetingRequest {
     private UUID majorUuid;
     private UUID subjectUuid;
     private int classNum;
-
     private int desiredCount;
     private String title;
     private String description;

@@ -13,3 +13,6 @@ public interface MeetingInfoRepository extends JpaRepository<MeetingInfo, UUID> 
 
 
 
+
+
+

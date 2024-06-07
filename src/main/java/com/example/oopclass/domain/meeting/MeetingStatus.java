@@ -19,9 +19,6 @@ public class MeetingStatus {
     private UUID meetingStatusUuid;
 
     @ManyToOne
-
-
-
     @JoinColumn(name = "meeting_uuid", nullable = false)
     private Meeting meeting;
 

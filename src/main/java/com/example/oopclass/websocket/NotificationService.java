@@ -29,33 +29,36 @@ public class NotificationService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
-    public void notifyMeetingCreator(String creatorId, String applicantInfo) {
+    public UUID notifyMeetingCreator(String creatorId, String applicantInfo) {
         String notificationMessage = "신청자 정보: " + applicantInfo + " - 수락 또는 거절?";
         NotificationMessage message = new NotificationMessage("MEETING_APPLICATION", notificationMessage);
         messagingTemplate.convertAndSendToUser(creatorId, "/topic/notifications", message);
         logger.info("Notification sent to meeting creator ({}): {}", creatorId, notificationMessage);
-        saveNotification(creatorId, notificationMessage);
+        return saveNotification(creatorId, notificationMessage);
     }
 
-    private void saveNotification(String userId, String message) {
+    private UUID saveNotification(String userId, String message) {
         Notification notification = new Notification();
         notification.setUserId(userId);
         notification.setMessage(message);
         notification.setCreatedAt(new Date());
         notification.setRead(false);
-        notificationRepository.save(notification);
+        Notification savedNotification = notificationRepository.save(notification);
         logger.info("Notification saved for user ({}): {}", userId, message);
+        return savedNotification.getNotificationUuid();
     }
 
-    public void notifyApplicant(String applicantId, boolean accepted) {
+    public UUID notifyApplicant(String applicantId, boolean accepted) {
         String notificationMessage = accepted ? "모임 신청이 완료되었습니다." : "모임 신청이 거절되었습니다.";
         NotificationMessage message = new NotificationMessage("MEETING_APPLICATION_RESPONSE", notificationMessage);
         messagingTemplate.convertAndSendToUser(applicantId, "/topic/notifications", message);
         logger.info("Notification sent to applicant ({}): {}", applicantId, notificationMessage);
-        saveNotification(applicantId, notificationMessage);
+        UUID notificationUuid = saveNotification(applicantId, notificationMessage);
 
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
         ops.set(applicantId, notificationMessage, 1, TimeUnit.DAYS);
+
+        return notificationUuid;
     }
 
     public void deleteNotification(UUID notificationId) {

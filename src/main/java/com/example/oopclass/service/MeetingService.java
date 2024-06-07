@@ -10,6 +10,7 @@ import com.example.oopclass.domain.user.UserRepository;
 import com.example.oopclass.dto.meeting.CreateMeetingRequest;
 import com.example.oopclass.dto.meeting.MeetingResponse;
 import com.example.oopclass.dto.meeting.UpdateMeetingRequest;
+import com.example.oopclass.dto.user.UserResponse;
 import com.example.oopclass.websocket.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -111,10 +113,13 @@ public class MeetingService {
     }
 
     @Transactional(readOnly = true)
-    public List<Meeting> filterAndSearchMeetings(UUID majorUuid, UUID subjectUuid, List<String> teamTypes, Integer desiredCount, String searchText) {
-        return meetingRepository.filterAndSearchMeetings(majorUuid, subjectUuid, teamTypes, desiredCount, searchText);
-    }
+    public List<MeetingResponse> filterAndSearchMeetings(UUID majorUuid, UUID subjectUuid, List<String> teamTypes, Integer desiredCount, Integer classNum, String searchText, String status) {
+        return meetingRepository.filterAndSearchMeetings(majorUuid, subjectUuid, teamTypes, desiredCount, classNum, searchText, status).stream()
+                .map(MeetingResponse::new)
+                .collect(Collectors.toList());
 
+
+    }
     @Transactional
     public void applyForMeeting(UUID meetingId, User applicant) {
         Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(() -> new IllegalArgumentException("Meeting not found"));
@@ -129,7 +134,7 @@ public class MeetingService {
     }
 
     @Transactional
-    public void respondToApplication(UUID meetingId, String applicantId, boolean accepted) {
+    public UUID respondToApplication(UUID meetingId, String applicantId, boolean accepted) {
         System.out.println("Meeting ID: " + meetingId);
         System.out.println("Applicant ID: " + applicantId);
 
@@ -142,6 +147,7 @@ public class MeetingService {
         MeetingInfo meetingInfo = meetingInfoRepository.findByMeeting(meeting)
                 .orElseThrow(() -> new IllegalArgumentException("Meeting info not found"));
 
+        UUID notificationUuid;
         if (accepted) {
             if (meetingInfo.getMeetingRecruitment().equals(meetingInfo.getMeetingRecruitmentFinished())) {
                 throw new IllegalStateException("Meeting recruitment is finished");
@@ -149,7 +155,6 @@ public class MeetingService {
             meetingInfo.setMeetingRecruitmentFinished(meetingInfo.getMeetingRecruitmentFinished() + 1);
             meetingInfoRepository.save(meetingInfo);
 
-            // MeetingStatus 엔티티 생성
             MeetingStatus meetingStatus = new MeetingStatus();
             meetingStatus.setMeeting(meeting);
             meetingStatus.setUser(applicant);
@@ -159,20 +164,22 @@ public class MeetingService {
             meetingRepository.findById(meeting.getMeetingUuid()).orElseThrow(() -> new IllegalArgumentException("Meeting not found in repository"));
             userRepository.findByUserId(applicant.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found in repository"));
 
-
             meetingStatusRepository.save(meetingStatus);
 
-            // Redis에 상태 저장
             ValueOperations<String, String> ops = redisTemplate.opsForValue();
             ops.set(applicantId.toString(), "Application accepted", 1, TimeUnit.DAYS);
+
+            notificationUuid = notificationService.notifyApplicant(applicant.getUserId(), true);
         } else {
-            // Redis에 상태 저장
             ValueOperations<String, String> ops = redisTemplate.opsForValue();
             ops.set(applicantId.toString(), "Application rejected", 1, TimeUnit.DAYS);
+
+            notificationUuid = notificationService.notifyApplicant(applicant.getUserId(), false);
         }
 
-        // 신청자에게 알림
-        notificationService.notifyApplicant(applicant.getUserId(), accepted);
+        notificationService.notifyMeetingCreator(meeting.getUser().getUserId(), applicant.getUsername());
+
+        return notificationUuid;
     }
 
     @Transactional(readOnly = true)
@@ -193,5 +200,24 @@ public class MeetingService {
         return distinctMeetings.stream()
                 .map(MeetingResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<MeetingUserResponse.UserWithRole> getUsersByMeetingWithRoles(UUID meetingUuid) {
+        Meeting meeting = meetingRepository.findById(meetingUuid)
+                .orElseThrow(() -> new IllegalArgumentException("Meeting not found"));
+
+        List<MeetingUserResponse.UserWithRole> usersWithRoles = new ArrayList<>();
+
+
+        User leader = meeting.getUser();
+        usersWithRoles.add(new MeetingUserResponse.UserWithRole(leader, "leader"));
+
+        List<MeetingStatus> meetingStatuses = meetingStatusRepository.findByMeeting_MeetingUuid(meetingUuid);
+        for (MeetingStatus meetingStatus : meetingStatuses) {
+            usersWithRoles.add(new MeetingUserResponse.UserWithRole(meetingStatus.getUser(), "member"));
+        }
+
+        return usersWithRoles;
     }
 }

@@ -1,9 +1,6 @@
 package com.example.oopclass.controller;
 
-import com.example.oopclass.domain.meeting.Meeting;
-import com.example.oopclass.domain.meeting.MeetingRepository;
-import com.example.oopclass.domain.meeting.MeetingStatus;
-import com.example.oopclass.domain.meeting.MeetingStatusRepository;
+import com.example.oopclass.domain.meeting.*;
 import com.example.oopclass.domain.user.User;
 import com.example.oopclass.dto.meeting.CreateMeetingRequest;
 import com.example.oopclass.dto.meeting.MeetingResponse;
@@ -94,14 +91,13 @@ public class MeetingController {
             @RequestParam(required = false) List<String> teamTypes,
             @RequestParam(required = false) Integer classNum,
             @RequestParam(required = false) Integer desiredCount,
-            @RequestParam(required = false) String searchText) {
+            @RequestParam(required = false) String searchText,
+            @RequestParam(required = false) String status) {
 
-        List<Meeting> meetings = meetingService.filterAndSearchMeetings(majorUuid, subjectUuid, teamTypes, desiredCount, searchText);
-        List<MeetingResponse> meetingResponses = meetings.stream()
-                .map(MeetingResponse::new)
-                .collect(Collectors.toList());
+        List<MeetingResponse> meetingResponses = meetingService.filterAndSearchMeetings(majorUuid, subjectUuid, teamTypes, desiredCount, classNum != null ? classNum : 0, searchText, status);
         return ResponseEntity.ok(meetingResponses);
     }
+
 
     @PostMapping("/{meetingId}/apply")
     public ResponseEntity<String> applyForMeeting(@PathVariable UUID meetingId, HttpServletRequest httpServletRequest) {
@@ -116,20 +112,16 @@ public class MeetingController {
     }
 
     @PostMapping("/{meetingId}/respond")
-    public ResponseEntity<String> respondToApplication(@PathVariable UUID meetingId, @RequestParam String applicantId, @RequestParam boolean accepted, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<UUID> respondToApplication(@PathVariable UUID meetingId, @RequestParam String applicantId, @RequestParam boolean accepted, HttpServletRequest httpServletRequest) {
         String token = jwtTokenProvider.resolveToken(httpServletRequest);
         if (token == null || !jwtTokenProvider.validateToken(token)) {
             return ResponseEntity.status(401).build(); // Unauthorized
         }
 
         String userId = jwtTokenProvider.getUserIdFromJWT(token);
-
-
         System.out.println("#######" + "userId: " + userId + "applicantId: " + applicantId);
-        meetingService.respondToApplication(meetingId, applicantId, accepted);
-        return ResponseEntity.ok("Response recorded successfully.");
-
-
+        UUID notificationUuid = meetingService.respondToApplication(meetingId, applicantId, accepted);
+        return ResponseEntity.ok(notificationUuid);
     }
 
     @GetMapping("/{userUuid}")
@@ -148,6 +140,21 @@ public class MeetingController {
 
         List<MeetingResponse> meetingResponses = meetingService.getMeetingsByUserUuid(userUuid);
         return ResponseEntity.ok(meetingResponses);
+    }
+
+
+    @GetMapping("/{meetingId}/users")
+    public ResponseEntity<MeetingUserResponse> getUsersByMeeting(@PathVariable UUID meetingId, HttpServletRequest httpServletRequest) {
+        String token = jwtTokenProvider.resolveToken(httpServletRequest);
+        if (token == null || !jwtTokenProvider.validateToken(token)) {
+            return ResponseEntity.status(401).build(); // Unauthorized
+        }
+
+        List<MeetingUserResponse.UserWithRole> users = meetingService.getUsersByMeetingWithRoles(meetingId);
+        MeetingUserResponse response = new MeetingUserResponse();
+        response.setUsers(users);
+
+        return ResponseEntity.ok(response);
     }
 
 }

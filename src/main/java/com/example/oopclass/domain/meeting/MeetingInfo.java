@@ -18,7 +18,6 @@ public class MeetingInfo {
     private UUID meetingInfoUuid;
 
     @Column(nullable = false)
-
     private Integer meetingRecruitment;
 
     @Column(nullable = false)

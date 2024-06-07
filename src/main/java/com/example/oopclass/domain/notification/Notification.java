@@ -17,6 +17,7 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID notificationUuid;
 
+
     @Column(name = "user_id", nullable = false)
     private String userId;
 
@@ -28,8 +29,5 @@ public class Notification {
     private Date createdAt;
 
     @Column(name = "is_read", nullable = false)
-
-
-
     private boolean isRead;
 }
