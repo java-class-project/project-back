@@ -92,7 +92,7 @@ public class MeetingController {
             @RequestParam(required = false) Integer classNum,
             @RequestParam(required = false) Integer desiredCount,
             @RequestParam(required = false) String searchText,
-            @RequestParam(required = false) String status) {
+            @RequestParam(required = false) List<String> status) {
 
         List<MeetingResponse> meetingResponses = meetingService.filterAndSearchMeetings(majorUuid, subjectUuid, teamTypes, desiredCount, classNum != null ? classNum : 0, searchText, status);
         return ResponseEntity.ok(meetingResponses);

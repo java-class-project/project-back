@@ -113,7 +113,7 @@ public class MeetingService {
     }
 
     @Transactional(readOnly = true)
-    public List<MeetingResponse> filterAndSearchMeetings(UUID majorUuid, UUID subjectUuid, List<String> teamTypes, Integer desiredCount, Integer classNum, String searchText, String status) {
+    public List<MeetingResponse> filterAndSearchMeetings(UUID majorUuid, UUID subjectUuid, List<String> teamTypes, Integer desiredCount, Integer classNum, String searchText, List<String> status) {
         return meetingRepository.filterAndSearchMeetings(majorUuid, subjectUuid, teamTypes, desiredCount, classNum, searchText, status).stream()
                 .map(MeetingResponse::new)
                 .collect(Collectors.toList());
