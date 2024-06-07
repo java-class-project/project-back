@@ -56,7 +56,7 @@ public class NotificationService {
         UUID notificationUuid = saveNotification(applicantId, notificationMessage);
 
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
-        ops.set(applicantId, notificationMessage, 1, TimeUnit.DAYS);
+        ops.set(applicantId, notificationMessage, 10, TimeUnit.DAYS);
 
         return notificationUuid;
     }
