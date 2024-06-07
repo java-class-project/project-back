@@ -1,4 +1,4 @@
-package com.example.oopclass.security;
+package com.example.oopclass.config;
 
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

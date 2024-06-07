@@ -1,5 +1,6 @@
-package com.example.oopclass.security;
+package com.example.oopclass.config;
 
+import com.example.oopclass.security.JwtAuthenticationFilter;
 import io.swagger.models.HttpMethod;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
