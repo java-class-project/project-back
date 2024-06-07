@@ -15,8 +15,6 @@ import java.util.UUID;
 public class SubjectService {
     private final SubjectRepository subjectRepository;
 
-
-
     @Transactional
     public Subject createSubject(CreateSubjectRequest request) {
         Subject subject = Subject.builder()

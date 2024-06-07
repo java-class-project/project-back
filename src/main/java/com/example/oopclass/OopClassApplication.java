@@ -1,5 +1,6 @@
 package com.example.oopclass;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,6 +16,11 @@ public class OopClassApplication implements CommandLineRunner {
 
 
 	public static void main(String[] args) {
+
+		Dotenv dotenv = Dotenv.configure().load();
+		dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+		SpringApplication.run(OopClassApplication.class, args);
+
 		SecurityContextHolder.clearContext(); // 애플리케이션 시작 시 인증 정보 초기화
 		SpringApplication.run(OopClassApplication.class, args);
 	}
