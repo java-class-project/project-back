@@ -11,10 +11,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class MajorService {
-
     @Autowired
     private MajorRepository majorRepository;
-
 
 
     public Major saveMajor(MajorReqDto majorReqDto) {

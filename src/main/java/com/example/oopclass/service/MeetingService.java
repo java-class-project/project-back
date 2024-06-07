@@ -8,6 +8,7 @@ import com.example.oopclass.domain.subject.SubjectRepository;
 import com.example.oopclass.domain.user.User;
 import com.example.oopclass.domain.user.UserRepository;
 import com.example.oopclass.dto.meeting.CreateMeetingRequest;
+import com.example.oopclass.dto.meeting.MeetingResponse;
 import com.example.oopclass.dto.meeting.UpdateMeetingRequest;
 import com.example.oopclass.websocket.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,16 +31,12 @@ public class MeetingService {
     private final MeetingInfoRepository meetingInfoRepository;
     private final MeetingStatusRepository meetingStatusRepository;
     private final UserRepository userRepository;
-
     private final MajorRepository majorRepository;
-
     private final SubjectRepository subjectRepository;
     private final NotificationService notificationService;
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-
-
 
     @Transactional
     public Meeting createMeeting(CreateMeetingRequest request, String userId) {
@@ -64,7 +62,7 @@ public class MeetingService {
         MeetingInfo meetingInfo = MeetingInfo.builder()
                 .meeting(savedMeeting)
                 .meetingRecruitment(request.getDesiredCount())
-                .meetingRecruitmentFinished(1)
+                .meetingRecruitmentFinished(0)
                 .build();
 
         meetingInfoRepository.save(meetingInfo);
@@ -132,8 +130,15 @@ public class MeetingService {
 
     @Transactional
     public void respondToApplication(UUID meetingId, String applicantId, boolean accepted) {
+        System.out.println("Meeting ID: " + meetingId);
+        System.out.println("Applicant ID: " + applicantId);
+
         Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(() -> new IllegalArgumentException("Meeting not found"));
         User applicant = userRepository.findByUserId(applicantId).orElseThrow(() -> new IllegalArgumentException("Applicant not found"));
+
+        System.out.println("Retrieved Meeting: " + meeting.getMeetingUuid());
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@Retrieved User: " + applicant);
+
         MeetingInfo meetingInfo = meetingInfoRepository.findByMeeting(meeting)
                 .orElseThrow(() -> new IllegalArgumentException("Meeting info not found"));
 
@@ -144,24 +149,49 @@ public class MeetingService {
             meetingInfo.setMeetingRecruitmentFinished(meetingInfo.getMeetingRecruitmentFinished() + 1);
             meetingInfoRepository.save(meetingInfo);
 
+            // MeetingStatus 엔티티 생성
             MeetingStatus meetingStatus = new MeetingStatus();
             meetingStatus.setMeeting(meeting);
             meetingStatus.setUser(applicant);
+
+            System.out.println("Meeting Status to be inserted: " + meetingStatus);
+
+            meetingRepository.findById(meeting.getMeetingUuid()).orElseThrow(() -> new IllegalArgumentException("Meeting not found in repository"));
+            userRepository.findByUserId(applicant.getUserId()).orElseThrow(() -> new IllegalArgumentException("User not found in repository"));
+
+
             meetingStatusRepository.save(meetingStatus);
 
+            // Redis에 상태 저장
             ValueOperations<String, String> ops = redisTemplate.opsForValue();
             ops.set(applicantId.toString(), "Application accepted", 1, TimeUnit.DAYS);
         } else {
+            // Redis에 상태 저장
             ValueOperations<String, String> ops = redisTemplate.opsForValue();
             ops.set(applicantId.toString(), "Application rejected", 1, TimeUnit.DAYS);
         }
 
+        // 신청자에게 알림
         notificationService.notifyApplicant(applicant.getUserId(), accepted);
     }
 
-    public MeetingStatus getMeetingStatusByUuid(UUID userUuid) {
-        return meetingStatusRepository.findByUser_UserUuid(userUuid).orElse(null);
+    @Transactional(readOnly = true)
+    public List<MeetingResponse> getMeetingsByUserUuid(UUID userUuid) {
+        List<Meeting> createdMeetings = meetingRepository.findByUser_UserUuid(userUuid);
+
+        List<MeetingStatus> meetingStatuses = meetingStatusRepository.findByUser_UserUuid(userUuid);
+        List<Meeting> participatedMeetings = meetingStatuses.stream()
+                .map(MeetingStatus::getMeeting)
+                .collect(Collectors.toList());
+
+        createdMeetings.addAll(participatedMeetings);
+
+        List<Meeting> distinctMeetings = createdMeetings.stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        return distinctMeetings.stream()
+                .map(MeetingResponse::new)
+                .collect(Collectors.toList());
     }
-
-
 }

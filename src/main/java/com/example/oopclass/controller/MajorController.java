@@ -21,8 +21,6 @@ public class MajorController {
     public ResponseEntity<Major> createMajor(@RequestBody MajorReqDto majorReqDto) {
         Major major = majorService.saveMajor(majorReqDto);
         return ResponseEntity.ok(major);
-
-
     }
 
     @GetMapping

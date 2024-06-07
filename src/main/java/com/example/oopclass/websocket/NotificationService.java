@@ -5,6 +5,7 @@ import com.example.oopclass.domain.notification.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -35,9 +36,6 @@ public class NotificationService {
         Notification notification = new Notification();
         notification.setUserId(userId);
         notification.setMessage(message);
-
-
-
         notification.setCreatedAt(new Date());
         notification.setRead(false);
         notificationRepository.save(notification);

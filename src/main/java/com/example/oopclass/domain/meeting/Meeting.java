@@ -59,4 +59,8 @@ public class Meeting {
     @ManyToOne
     @JoinColumn(name = "user_uuid")
     private User user;
+
+    @OneToOne(mappedBy = "meeting", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private MeetingInfo meetingInfo;
 }
+

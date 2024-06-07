@@ -13,6 +13,8 @@ import java.util.UUID;
 public interface MeetingRepository extends JpaRepository<Meeting, UUID> {
     Optional<Meeting> findByMeetingUuidAndDeletedAtIsNull(UUID meetingUuid);
 
+    List<Meeting> findByUser_UserUuid(UUID userUuid);
+
     @Query("SELECT m FROM Meeting m WHERE " +
             "(:majorUuid IS NULL OR m.major.majorUuid = :majorUuid) AND " +
             "(:subjectUuid IS NULL OR m.subject.subjectUuid = :subjectUuid) AND " +

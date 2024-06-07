@@ -18,12 +18,13 @@ public class MeetingInfo {
     private UUID meetingInfoUuid;
 
     @Column(nullable = false)
+
     private Integer meetingRecruitment;
 
     @Column(nullable = false)
     private Integer meetingRecruitmentFinished;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "meeting_uuid", nullable = false)
     private Meeting meeting;
 }

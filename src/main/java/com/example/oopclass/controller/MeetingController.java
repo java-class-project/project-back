@@ -122,31 +122,34 @@ public class MeetingController {
             return ResponseEntity.status(401).build(); // Unauthorized
         }
 
+        String userId = jwtTokenProvider.getUserIdFromJWT(token);
+
+
+        System.out.println("#######" + "userId: " + userId + "applicantId: " + applicantId);
         meetingService.respondToApplication(meetingId, applicantId, accepted);
         return ResponseEntity.ok("Response recorded successfully.");
+
+
+
+
     }
 
     @GetMapping("/{userUuid}")
-    public ResponseEntity<MeetingStatusResponse> getMeetingInfo(@PathVariable UUID userUuid, HttpServletRequest request) {
+    public ResponseEntity<List<MeetingResponse>> getMeetingInfo(@PathVariable UUID userUuid, HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
         if (token == null || !jwtTokenProvider.validateToken(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         String userId = jwtTokenProvider.getUserIdFromJWT(token);
-        MeetingStatus meetingStatus = meetingService.getMeetingStatusByUuid(userUuid);
         User user = userService.getUserByUuid(userUuid);
-
-        if (meetingStatus == null) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
 
         if (!user.getUserId().equals(userId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        MeetingStatusResponse response = new MeetingStatusResponse(meetingStatus);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        List<MeetingResponse> meetingResponses = meetingService.getMeetingsByUserUuid(userUuid);
+        return ResponseEntity.ok(meetingResponses);
     }
 
 }

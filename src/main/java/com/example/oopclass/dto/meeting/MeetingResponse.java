@@ -25,11 +25,17 @@ public class MeetingResponse {
 
     private Date date;
 
+    private Integer meetingRecruitment;
+    private Integer meetingRecruitmentFinished;
+
     public MeetingResponse(Meeting meeting) {
         this.meetingUuid = meeting.getMeetingUuid();
         this.subjectName = meeting.getSubject().getSubjectName();
         this.desiredCount = meeting.getDesiredCount();
         this.teamType = meeting.getTeamType();
+
+
+
         this.username = meeting.getUser().getUsername();
         this.userId = meeting.getUser().getUserId();
         this.classNum = meeting.getClassNum();
@@ -38,5 +44,11 @@ public class MeetingResponse {
         this.title = meeting.getTitle();
         this.description = meeting.getDescription();
         this.date = meeting.getUpdatedAt();
+
+
+        if (meeting.getMeetingInfo() != null) {
+            this.meetingRecruitment = meeting.getMeetingInfo().getMeetingRecruitment();
+            this.meetingRecruitmentFinished = meeting.getMeetingInfo().getMeetingRecruitmentFinished();
+        }
     }
 }

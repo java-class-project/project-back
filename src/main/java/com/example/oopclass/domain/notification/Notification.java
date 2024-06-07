@@ -28,5 +28,8 @@ public class Notification {
     private Date createdAt;
 
     @Column(name = "is_read", nullable = false)
+
+
+
     private boolean isRead;
 }

@@ -49,7 +49,7 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
         return Jwts.builder()
-                .setSubject(userId)  // userId 대신 userUuid를 사용합니다.
+                .setSubject(userId)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS512)
