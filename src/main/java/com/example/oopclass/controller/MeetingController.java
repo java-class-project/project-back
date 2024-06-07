@@ -130,8 +130,6 @@ public class MeetingController {
         return ResponseEntity.ok("Response recorded successfully.");
 
 
-
-
     }
 
     @GetMapping("/{userUuid}")

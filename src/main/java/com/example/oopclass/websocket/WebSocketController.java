@@ -14,14 +14,11 @@ public class WebSocketController {
 
 
     @MessageMapping("/sendMessage")
-
-
-
-
     @SendTo("/topic/messages")
     public NotificationMessage sendMessage(NotificationMessage message) {
         logger.info("Received message: {}", message.getMessage());
         return message;
     }
 }
+
 
