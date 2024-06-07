@@ -11,8 +11,6 @@ public class WebSocketController {
 
     private static final Logger logger = LoggerFactory.getLogger(WebSocketController.class);
 
-
-
     @MessageMapping("/sendMessage")
     @SendTo("/topic/messages")
     public NotificationMessage sendMessage(NotificationMessage message) {
