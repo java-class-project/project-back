@@ -1,4 +1,4 @@
-package com.example.oopclass.websocket;
+package com.example.oopclass.domain.notification;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,11 +9,7 @@ import lombok.Data;
 public class NotificationMessage {
 
     private String type;
-
     private String message;
-
-
-
 
 
 }

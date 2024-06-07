@@ -1,4 +1,4 @@
-package com.example.oopclass.websocket;
+package com.example.oopclass.domain.notification;
 
 public class Message {
 
@@ -13,9 +13,6 @@ public class Message {
     }
 
     public String getContent() {
-
-
-
         return content;
     }
 

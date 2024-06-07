@@ -1,5 +1,6 @@
-package com.example.oopclass.websocket;
+package com.example.oopclass.controller;
 
+import com.example.oopclass.domain.notification.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class ChatController {
-
     private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 
     @MessageMapping("/chat")

@@ -1,7 +1,8 @@
-package com.example.oopclass.websocket;
+package com.example.oopclass.service;
 
 import com.example.oopclass.domain.notification.Notification;
 import com.example.oopclass.domain.notification.NotificationRepository;
+import com.example.oopclass.domain.notification.NotificationMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;

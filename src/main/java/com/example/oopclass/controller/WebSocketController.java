@@ -1,5 +1,6 @@
-package com.example.oopclass.websocket;
+package com.example.oopclass.controller;
 
+import com.example.oopclass.domain.notification.NotificationMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;

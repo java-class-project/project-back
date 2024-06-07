@@ -1,5 +1,6 @@
-package com.example.oopclass.websocket;
+package com.example.oopclass.controller;
 
+import com.example.oopclass.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -10,8 +10,6 @@ import com.example.oopclass.domain.user.UserRepository;
 import com.example.oopclass.dto.meeting.CreateMeetingRequest;
 import com.example.oopclass.dto.meeting.MeetingResponse;
 import com.example.oopclass.dto.meeting.UpdateMeetingRequest;
-import com.example.oopclass.dto.user.UserResponse;
-import com.example.oopclass.websocket.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

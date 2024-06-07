@@ -15,7 +15,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(final MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/sub");
         registry.setApplicationDestinationPrefixes("/pub");
-
     }
 
     @Override
@@ -24,12 +23,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .addEndpoint("/ws")     // 엔드포인트: /ws
                 .setAllowedOrigins("*");
     }
-
-
-
-
-
-
 
 }
 
