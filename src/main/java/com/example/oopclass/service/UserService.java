@@ -90,14 +90,14 @@ public class UserService {
         user.setUsername(request.getUsername());
         user.setStudentNumber(request.getStudentNumber());
 
-        if (request.getMainMajor() != null) {
-            Major mainMajor = majorRepository.findById(UUID.fromString(request.getMainMajor()))
+        if (request.getMainMajorUuid() != null) {
+            Major mainMajor = majorRepository.findById(request.getMainMajorUuid())
                     .orElseThrow(() -> new IllegalArgumentException("Main major UUID is invalid."));
             user.setMainMajor(mainMajor);
         }
 
-        if (request.getSubMajor1() != null) {
-            Major subMajor1 = majorRepository.findById(UUID.fromString(request.getSubMajor1()))
+        if (request.getSubMajor1Uuid() != null) {
+            Major subMajor1 = majorRepository.findById(request.getSubMajor1Uuid())
                     .orElseThrow(() -> new IllegalArgumentException("Sub major 1 UUID is invalid."));
             user.setSubMajor1(subMajor1);
         } else {

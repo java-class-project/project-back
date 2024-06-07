@@ -64,7 +64,7 @@ public class MeetingService {
         MeetingInfo meetingInfo = MeetingInfo.builder()
                 .meeting(savedMeeting)
                 .meetingRecruitment(request.getDesiredCount())
-                .meetingRecruitmentFinished(0)
+                .meetingRecruitmentFinished(1)
                 .build();
 
         meetingInfoRepository.save(meetingInfo);

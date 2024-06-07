@@ -18,4 +18,7 @@ public class UpdateRequest {
     private String subMajor1Name;
     private UUID subMajor2Uuid;
     private String subMajor2Name;
+
+
+
 }
