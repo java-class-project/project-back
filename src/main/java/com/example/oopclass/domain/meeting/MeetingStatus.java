@@ -4,6 +4,7 @@ import com.example.oopclass.domain.meeting.Meeting;
 import com.example.oopclass.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EnableJpaRepositories(basePackages = "com.example.oopclass.domain")
 public class MeetingStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.*;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
 import java.util.UUID;
 
 @Entity
@@ -14,6 +16,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EnableJpaRepositories(basePackages = "com.example.oopclass.domain")
 public class Subject {
     @Id
     @GeneratedValue(generator = "UUID")

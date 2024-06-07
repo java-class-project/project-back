@@ -3,6 +3,7 @@ package com.example.oopclass.domain.major;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@EnableJpaRepositories(basePackages = "com.example.oopclass.domain")
 public class Major {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

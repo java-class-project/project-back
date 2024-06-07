@@ -6,6 +6,7 @@ import com.example.oopclass.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.security.Timestamp;
 import java.util.Date;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EnableJpaRepositories(basePackages = "com.example.oopclass.domain")
 public class Meeting {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

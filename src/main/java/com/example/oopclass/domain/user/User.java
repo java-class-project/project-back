@@ -4,6 +4,7 @@ import com.example.oopclass.domain.major.Major;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.UUID;
 
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EnableJpaRepositories(basePackages = "com.example.oopclass.domain")
 public class User {
     @Id
     @GeneratedValue(generator = "UUID")

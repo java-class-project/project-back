@@ -2,6 +2,7 @@ package com.example.oopclass.domain.notification;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.Date;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EnableJpaRepositories(basePackages = "com.example.oopclass.domain")
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
