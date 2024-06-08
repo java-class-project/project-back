@@ -9,8 +9,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "major")
-
-
 @Getter
 @Setter
 @EnableJpaRepositories(basePackages = "com.example.oopclass.domain")
