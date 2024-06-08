@@ -26,4 +26,7 @@ public class MajorService {
                 .sorted((m1, m2) -> m1.getMajorName().compareToIgnoreCase(m2.getMajorName()))
                 .collect(Collectors.toList());
     }
+
+
+
 }

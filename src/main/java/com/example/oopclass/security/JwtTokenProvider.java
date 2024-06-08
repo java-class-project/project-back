@@ -83,6 +83,10 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
+
+
+
+
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             // 블랙리스트 확인
             ValueOperations<String, String> ops = redisTemplate.opsForValue();

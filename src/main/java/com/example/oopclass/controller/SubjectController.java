@@ -30,6 +30,10 @@ public class SubjectController {
         if (major != null) {
             subjects = subjectService.getSubjectsByMajor(major);
         } else {
+            
+            
+            
+            
             subjects = subjectService.getAllSubjects();
         }
         return ResponseEntity.ok(subjects);

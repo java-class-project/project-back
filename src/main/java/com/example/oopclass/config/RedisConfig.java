@@ -26,6 +26,7 @@ public class RedisConfig {
     @Primary
     public RedisTemplate<String, String> stringValueRedisTemplate() {
         final RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        
 
 
 

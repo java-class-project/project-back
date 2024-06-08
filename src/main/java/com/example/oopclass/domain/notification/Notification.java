@@ -23,6 +23,8 @@ public class Notification {
     @Column(name = "user_id", nullable = false)
     private String userId;
 
+
+
     @Column(name = "message", nullable = false)
     private String message;
 

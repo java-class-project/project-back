@@ -27,6 +27,10 @@ public class Meeting {
     private UUID meetingUuid;
 
     @Column(name = "team_type", length = 5000)
+
+
+
+
     private String teamType;
 
     @Column(name="class_num")

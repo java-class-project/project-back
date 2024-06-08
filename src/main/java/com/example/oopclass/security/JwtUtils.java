@@ -26,6 +26,10 @@ public class JwtUtils {
 
 
     @PostConstruct
+
+
+
+
     public void init() {
         if (jwtSecret == null || jwtSecret.getBytes().length < 64) {
             throw new IllegalArgumentException("JWT secret key must be at least 512 bits long (64 bytes)");

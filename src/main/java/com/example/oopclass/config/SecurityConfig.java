@@ -52,6 +52,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .logout(logout -> logout
+
+
                         .logoutUrl("/v1/auth/logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")

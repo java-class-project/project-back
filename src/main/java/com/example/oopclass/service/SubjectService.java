@@ -32,3 +32,7 @@ public class SubjectService {
         return subjectRepository.findByMajorMajorUuid(majorUuid);
     }
 }
+
+
+
+

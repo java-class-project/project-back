@@ -28,6 +28,10 @@ public class Subject {
     private String subjectName;
 
     @ManyToOne
+
+
+
+
     @JoinColumn(name = "major_uuid")
     private Major major;
 }

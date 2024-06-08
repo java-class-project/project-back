@@ -42,6 +42,10 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
+
+
+
     @PutMapping("/{userUuid}")
     public ResponseEntity<UserResponse> updateUserInfo(@PathVariable UUID userUuid, @RequestBody @Valid UpdateRequest request, HttpServletRequest httpRequest) {
         String token = jwtTokenProvider.resolveToken(httpRequest);

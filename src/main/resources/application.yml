@@ -3,18 +3,21 @@ app:
   jwtExpirationMs: ${APP_JWT_EXPIRATION_MS}
 
 spring:
-
   application:
     name: oop-class
-
+  jmx:
+    enabled: false
   redis:
     host: ${SPRING_REDIS_HOST}
     port: ${SPRING_REDIS_PORT}
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      register-mbeans: false
   jpa:
     hibernate:
       show-sql: true
@@ -24,3 +27,6 @@ spring:
 
 server:
   port: ${SERVER_PORT}
+
+
+
