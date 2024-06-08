@@ -106,18 +106,27 @@ public class MeetingService {
     }
 
     @Transactional(readOnly = true)
-    public List<Meeting> getAllMeetings() {
-        return meetingRepository.findAll();
+    public List<MeetingResponse> getAllMeetings() {
+        return meetingRepository.findAll().stream()
+                .map(MeetingResponse::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<MeetingResponse> filterAndSearchMeetings(UUID majorUuid, UUID subjectUuid, List<String> teamTypes, Integer desiredCount, Integer classNum, String searchText, List<String> status) {
-        return meetingRepository.filterAndSearchMeetings(majorUuid, subjectUuid, teamTypes, desiredCount, classNum, searchText, status).stream()
+        List<Meeting> meetings;
+        if (majorUuid == null && subjectUuid == null && teamTypes == null && desiredCount == null && classNum == null && searchText == null && status == null) {
+            meetings = meetingRepository.findAll();
+        } else {
+            meetings = meetingRepository.filterAndSearchMeetings(
+                    majorUuid, subjectUuid, teamTypes, desiredCount, classNum, searchText, status);
+        }
+
+        return meetings.stream()
                 .map(MeetingResponse::new)
                 .collect(Collectors.toList());
-
-
     }
+
     @Transactional
     public void applyForMeeting(UUID meetingId, User applicant) {
         Meeting meeting = meetingRepository.findById(meetingId).orElseThrow(() -> new IllegalArgumentException("Meeting not found"));
@@ -128,6 +137,10 @@ public class MeetingService {
         }
 
         String applicantInfo = "이름: " + applicant.getUsername() + ", 학과: " + applicant.getMainMajor().getMajorName() + ", 학번: " + applicant.getStudentNumber() + ", 수업: " + meeting.getSubject().getSubjectName() + ", 신청 날짜: " + new Date();
+
+
+
+
         notificationService.notifyMeetingCreator(meeting.getUser().getUserId(), applicantInfo);
     }
 
@@ -140,7 +153,6 @@ public class MeetingService {
         User applicant = userRepository.findByUserId(applicantId).orElseThrow(() -> new IllegalArgumentException("Applicant not found"));
 
         System.out.println("Retrieved Meeting: " + meeting.getMeetingUuid());
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@Retrieved User: " + applicant);
 
         MeetingInfo meetingInfo = meetingInfoRepository.findByMeeting(meeting)
                 .orElseThrow(() -> new IllegalArgumentException("Meeting info not found"));

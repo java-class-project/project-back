@@ -77,10 +77,7 @@ public class MeetingController {
 
     @GetMapping
     public ResponseEntity<List<MeetingResponse>> getAllMeetings() {
-        List<Meeting> meetings = meetingService.getAllMeetings();
-        List<MeetingResponse> meetingResponses = meetings.stream()
-                .map(MeetingResponse::new)
-                .collect(Collectors.toList());
+        List<MeetingResponse> meetingResponses = meetingService.getAllMeetings();
         return ResponseEntity.ok(meetingResponses);
     }
 
@@ -110,6 +107,9 @@ public class MeetingController {
         meetingService.applyForMeeting(meetingId, applicant);
         return ResponseEntity.ok("Application sent successfully.");
     }
+
+
+
 
     @PostMapping("/{meetingId}/respond")
     public ResponseEntity<UUID> respondToApplication(@PathVariable UUID meetingId, @RequestParam String applicantId, @RequestParam boolean accepted, HttpServletRequest httpServletRequest) {

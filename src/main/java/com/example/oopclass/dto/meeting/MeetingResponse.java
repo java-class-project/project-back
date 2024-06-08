@@ -39,12 +39,8 @@ public class MeetingResponse {
         this.title = meeting.getTitle();
         this.description = meeting.getDescription();
         this.date = meeting.getUpdatedAt();
-
-
-        if (meeting.getMeetingInfo() != null) {
-            this.meetingRecruitment = meeting.getMeetingInfo().getMeetingRecruitment();
-            this.meetingRecruitmentFinished = meeting.getMeetingInfo().getMeetingRecruitmentFinished();
-            this.status = meeting.getMeetingInfo().getMeetingRecruitmentFinished() > 1 ? "team" : "person";
-        }
+        this.meetingRecruitment = meeting.getMeetingInfo().getMeetingRecruitment();
+        this.meetingRecruitmentFinished = meeting.getMeetingInfo().getMeetingRecruitmentFinished();
+        this.status = (meeting.getMeetingInfo().getMeetingRecruitmentFinished() == 1) ? "person" : "team";
     }
 }

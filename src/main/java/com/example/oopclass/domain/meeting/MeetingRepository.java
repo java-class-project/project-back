@@ -23,8 +23,9 @@ public interface MeetingRepository extends JpaRepository<Meeting, UUID> {
             "(:desiredCount IS NULL OR m.desiredCount = :desiredCount) AND " +
             "(:classNum = 0 OR m.classNum = :classNum) AND " +
             "(:searchText IS NULL OR m.title LIKE %:searchText% OR m.description LIKE %:searchText%) AND " +
-            "(:status IS NULL OR " +
-            "((:status) IS NOT NULL AND mi.meetingRecruitmentFinished IN (CASE WHEN 'person' IN (:status) THEN 1 ELSE null END, CASE WHEN 'team' IN (:status) THEN mi.meetingRecruitmentFinished ELSE null END)))")
+            "(COALESCE(:status, null) IS NULL OR " +
+            "(CASE WHEN 'person' IN (:status) THEN mi.meetingRecruitmentFinished = 1 ELSE TRUE END) AND " +
+            "(CASE WHEN 'team' IN (:status) THEN mi.meetingRecruitmentFinished > 1 ELSE TRUE END))")
     List<Meeting> filterAndSearchMeetings(@Param("majorUuid") UUID majorUuid,
                                           @Param("subjectUuid") UUID subjectUuid,
                                           @Param("teamTypes") List<String> teamTypes,
