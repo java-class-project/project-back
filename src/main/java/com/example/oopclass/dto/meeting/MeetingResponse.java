@@ -9,7 +9,6 @@ import java.util.UUID;
 @Getter
 public class MeetingResponse {
     private UUID meetingUuid;
-
     private String subjectName;
     private int desiredCount;
     private String teamType;

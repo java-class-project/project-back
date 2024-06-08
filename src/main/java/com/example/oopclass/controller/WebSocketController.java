@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class WebSocketController {
-
     private static final Logger logger = LoggerFactory.getLogger(WebSocketController.class);
 
     @MessageMapping("/sendMessage")

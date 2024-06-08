@@ -10,9 +10,7 @@ import java.util.UUID;
 public class UpdateMeetingRequest {
     private String teamType;
     private UUID majorUuid;
-
     private UUID subjectUuid;
-
     private int desiredCount;
     private String title;
     private String description;

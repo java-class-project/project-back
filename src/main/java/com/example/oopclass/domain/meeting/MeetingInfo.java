@@ -26,10 +26,6 @@ public class MeetingInfo {
     private Integer meetingRecruitmentFinished;
 
     @OneToOne
-
-
-
-
     @JoinColumn(name = "meeting_uuid", nullable = false)
     private Meeting meeting;
 }

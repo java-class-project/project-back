@@ -11,7 +11,6 @@ import java.util.UUID;
 @RequestMapping("/v1/notifications")
 @RequiredArgsConstructor
 public class NotificationController {
-
     private final NotificationService notificationService;
 
     @DeleteMapping("/{notificationId}")

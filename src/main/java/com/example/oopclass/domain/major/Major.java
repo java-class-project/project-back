@@ -15,10 +15,6 @@ import java.util.UUID;
 @Setter
 @EnableJpaRepositories(basePackages = "com.example.oopclass.domain")
 public class Major {
-    
-    
-    
-    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "major_uuid", columnDefinition = "UUID")

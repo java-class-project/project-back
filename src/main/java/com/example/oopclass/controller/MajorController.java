@@ -12,11 +12,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/major")
 public class MajorController {
-
     @Autowired
     private MajorService majorService;
 
-    
     @PostMapping
     public ResponseEntity<Major> createMajor(@RequestBody MajorReqDto majorReqDto) {
         Major major = majorService.saveMajor(majorReqDto);

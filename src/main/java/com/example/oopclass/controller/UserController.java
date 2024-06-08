@@ -19,11 +19,8 @@ import java.util.UUID;
 @RequestMapping("/v1/user")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
-
-
 
     @GetMapping("/{userUuid}")
     public ResponseEntity<UserResponse> getUserInfo(@PathVariable UUID userUuid, HttpServletRequest request) {
@@ -41,10 +38,6 @@ public class UserController {
         UserResponse response = new UserResponse(user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
-
-
 
     @PutMapping("/{userUuid}")
     public ResponseEntity<UserResponse> updateUserInfo(@PathVariable UUID userUuid, @RequestBody @Valid UpdateRequest request, HttpServletRequest httpRequest) {

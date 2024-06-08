@@ -14,7 +14,6 @@ public class MajorService {
     @Autowired
     private MajorRepository majorRepository;
 
-
     public Major saveMajor(MajorReqDto majorReqDto) {
         Major major = new Major();
         major.setMajorName(majorReqDto.getMajorName());
@@ -26,7 +25,5 @@ public class MajorService {
                 .sorted((m1, m2) -> m1.getMajorName().compareToIgnoreCase(m2.getMajorName()))
                 .collect(Collectors.toList());
     }
-
-
 
 }

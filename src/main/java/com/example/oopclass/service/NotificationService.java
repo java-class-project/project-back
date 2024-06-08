@@ -56,9 +56,6 @@ public class NotificationService {
         logger.info("Notification sent to applicant ({}): {}", applicantId, notificationMessage);
         UUID notificationUuid = saveNotification(applicantId, notificationMessage);
 
-
-
-
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
         ops.set(applicantId, notificationMessage, 10, TimeUnit.DAYS);
 

@@ -28,10 +28,6 @@ public class User {
 
     @Column(name = "user_id", nullable = false, unique = true)
     private String userId;
-    
-    
-    
-    
 
     @Column(name = "password")
     private String password;
@@ -57,7 +53,7 @@ public class User {
 
     private UserRole role;
 
-    // 명시적으로 getter 메서드를 추가 (IDE 문제가 해결되지 않을 경우)
+
     public UUID getUserUuid() {
         return userUuid;
     }

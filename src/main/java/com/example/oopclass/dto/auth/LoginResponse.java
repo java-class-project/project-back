@@ -1,4 +1,4 @@
-package com.example.oopclass.dto.user;
+package com.example.oopclass.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

@@ -11,7 +11,6 @@ public class MeetingStatusResponse {
     private int desiredCount;
     private String teamType;
     private String username;
-
     private String studentNumber;
     private String userMajor;
     private String title;

@@ -108,9 +108,6 @@ public class MeetingController {
         return ResponseEntity.ok("Application sent successfully.");
     }
 
-
-
-
     @PostMapping("/{meetingId}/respond")
     public ResponseEntity<UUID> respondToApplication(@PathVariable UUID meetingId, @RequestParam String applicantId, @RequestParam boolean accepted, HttpServletRequest httpServletRequest) {
         String token = jwtTokenProvider.resolveToken(httpServletRequest);
@@ -119,7 +116,6 @@ public class MeetingController {
         }
 
         String userId = jwtTokenProvider.getUserIdFromJWT(token);
-        System.out.println("#######" + "userId: " + userId + "applicantId: " + applicantId);
         UUID notificationUuid = meetingService.respondToApplication(meetingId, applicantId, accepted);
         return ResponseEntity.ok(notificationUuid);
     }

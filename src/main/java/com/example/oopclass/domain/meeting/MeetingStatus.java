@@ -28,9 +28,4 @@ public class MeetingStatus {
     @JoinColumn(name = "user_uuid", nullable = false)
     private User user;
 
-
-    
-    
-    
-
 }

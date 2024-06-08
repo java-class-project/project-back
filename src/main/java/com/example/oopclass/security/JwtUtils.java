@@ -19,17 +19,9 @@ public class JwtUtils {
 
     @Value("${app.jwtExpirationMs}")
     private int jwtExpirationMs;
-
     private final SecretKey key;
 
-
-
-
     @PostConstruct
-
-
-
-
     public void init() {
         if (jwtSecret == null || jwtSecret.getBytes().length < 64) {
             throw new IllegalArgumentException("JWT secret key must be at least 512 bits long (64 bytes)");
@@ -40,8 +32,6 @@ public class JwtUtils {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         this.jwtExpirationMs = jwtExpirationMs;
     }
-
-
 
     public String generateJwtToken(UserDetails userDetails) {
         return Jwts.builder()

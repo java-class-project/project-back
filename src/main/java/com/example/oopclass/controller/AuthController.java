@@ -2,7 +2,7 @@ package com.example.oopclass.controller;
 
 import com.example.oopclass.domain.user.User;
 import com.example.oopclass.dto.auth.LoginRequest;
-import com.example.oopclass.dto.user.LoginResponse;
+import com.example.oopclass.dto.auth.LoginResponse;
 import com.example.oopclass.security.JwtTokenProvider;
 import com.example.oopclass.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
-
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
     private final UserService userService;

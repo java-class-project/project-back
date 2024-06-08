@@ -62,13 +62,11 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
-        return claims.getSubject();  // 이 메서드는 userUuid를 반환함
+        return claims.getSubject();
     }
 
     public User getUserFromJWT(String token) {
         String userId = getUserIdFromJWT(token);
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11" + userRepository.findByUserId(userId));
         return userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
@@ -83,10 +81,6 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-
-
-
-
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             // 블랙리스트 확인
             ValueOperations<String, String> ops = redisTemplate.opsForValue();

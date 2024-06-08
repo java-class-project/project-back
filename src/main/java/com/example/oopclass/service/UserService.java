@@ -97,10 +97,6 @@ public class UserService {
         }
 
         if (request.getSubMajor1Uuid() != null) {
-
-
-
-
             Major subMajor1 = majorRepository.findById(request.getSubMajor1Uuid())
                     .orElseThrow(() -> new IllegalArgumentException("Sub major 1 UUID is invalid."));
             user.setSubMajor1(subMajor1);

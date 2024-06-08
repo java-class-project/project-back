@@ -138,9 +138,6 @@ public class MeetingService {
 
         String applicantInfo = "이름: " + applicant.getUsername() + ", 학과: " + applicant.getMainMajor().getMajorName() + ", 학번: " + applicant.getStudentNumber() + ", 수업: " + meeting.getSubject().getSubjectName() + ", 신청 날짜: " + new Date();
 
-
-
-
         notificationService.notifyMeetingCreator(meeting.getUser().getUserId(), applicantInfo);
     }
 

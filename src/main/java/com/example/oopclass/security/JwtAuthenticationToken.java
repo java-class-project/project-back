@@ -20,10 +20,6 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     public Object getCredentials() {
         return null;
     }
-    
-    
-    
-    
 
     @Override
     public UserDetails getPrincipal() {
